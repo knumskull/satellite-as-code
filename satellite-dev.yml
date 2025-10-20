@@ -9,8 +9,6 @@
 
   vars:
     satellite_version: 6.17
-    satellite_module_name: "satellite"
-    satellite_desired_stream: "el9"
 
   tasks:
     - name: Register with activationkey
@@ -51,6 +49,33 @@
     - config/accounts.vault
 
   tasks:
+
+    - name: 'Handle firewalld configuration'
+      become: true
+      block:
+
+        - name: 'Configure firewalld ports'
+          ansible.posix.firewalld:
+            zone: "{{ _t_port.zone | default('public') }}"
+            port: '{{ _t_port.port }}'
+            state: 'enabled'
+            permanent: true
+            immediate: true
+          loop: '{{ sat_firewall_ports }}'
+          loop_control:
+            loop_var: '_t_port'
+
+        - name: 'Configure firewalld services'
+          ansible.posix.firewalld:
+            zone: "{{ _t_service.zone | default('public') }}"
+            service: '{{ _t_service.name }}'
+            state: 'enabled'
+            permanent: true
+            immediate: true
+          loop: '{{ sat_firewall_services }}'
+          loop_control:
+            loop_var: '_t_service'
+
     - name: Run satellite-installer
       ansible.builtin.import_role:
         name: redhat.satellite_operations.installer
