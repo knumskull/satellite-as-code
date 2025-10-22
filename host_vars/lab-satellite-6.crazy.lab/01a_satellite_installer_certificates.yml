@@ -3,10 +3,10 @@
 sat_deploy_certificates: true
 
 # Path to the private key for Satellite
-sat_certs_priv_key: '/tmp/fetched/localhost/satellite.office.int.scheib.me.key.pem'
+sat_certs_priv_key: '/tmp/fetched/localhost/wildcard.crazy.lab.key.pem'
 
 # Path to the public key for Satellite
-sat_certs_pub_key: '/tmp/fetched/localhost/satellite.office.int.scheib.me.cert.pem'
+sat_certs_pub_key: '/tmp/fetched/localhost/wildcard.crazy.lab.cert.pem'
 
 # Path to the CA bundle certificate for Satellite
 sat_certs_ca_bundle: '/tmp/fetched/localhost/ca-chain.cert.pem'

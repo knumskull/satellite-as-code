@@ -1,9 +1,9 @@
 ---
 # Initial Organization to create
-sat_initial_organization: 'org-core'
+sat_initial_organization: 'org-crazy-lab'
 
 # Initial Location to create
-sat_initial_location: 'loc-core'
+sat_initial_location: 'loc-lab'
 
 # Name of the Satellite package
 sat_package_name: 'satellite'
