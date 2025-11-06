@@ -2,5 +2,11 @@
 - name: 'Enable and/or create custom Repositories in custom Products in a Red Hat Satellite'
   hosts: 'all'
   gather_facts: false
-  roles:
-    - name: 'redhat.satellite.repositories'
+  # Somehow a become is needed for current satellite to enable repos. Don't know why.
+  become: true
+
+  tasks:
+    - name: Include Red Hat Satellite repository tasks
+      ansible.builtin.include_role:
+        name: 'redhat.satellite.repositories'
+...
