@@ -14,7 +14,7 @@ sat_global_parameters_ansible_provisioning:
   - name: 'p-ansible_controller_host'
     parameter_type: 'string'
     hidden_value: false
-    value: 'https://automation-controller.office.int.scheib.me'
+    value: 'https://lab-aap-26-containerized.crazy.lab'
 
   - name: 'p-ansible_inventory_id'
     parameter_type: 'integer'

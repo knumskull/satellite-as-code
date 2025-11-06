@@ -1,10 +1,10 @@
 ---
 # Define the Subnets
 satellite_subnets:
-  - name: 'sn-172_31_3_0'
-    network: '172.31.3.0'
+  - name: 'sn-172_16_100_0'
+    network: '172.16.100.0'
     mask: '255.255.255.0'
-    gateway: '172.31.3.1'
+    gateway: '172.16.100.254'
     boot_mode: 'Static'
     ipam: 'None'
     tftp_proxy: '{{ inventory_hostname }}'
@@ -12,10 +12,10 @@ satellite_subnets:
     discovery_proxy: '{{ inventory_hostname }}'
     remote_execution_proxies:
       - '{{ inventory_hostname }}'
-    dns_primary: '172.31.3.1'
-    dns_secondary: '172.31.3.47'
+    dns_primary: '172.16.100.254'
+    # dns_secondary: '172.16.100.254'
     domains:
-      - 'office.int.scheib.me'
+      - 'crazy.lab'
     organizations:
       - '{{ satellite_organization }}'
     locations:

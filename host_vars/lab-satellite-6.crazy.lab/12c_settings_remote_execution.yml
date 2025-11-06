@@ -5,4 +5,4 @@ sat_settings_remote_execution:
     value: 'remote-satellite'
 
   - name: 'remote_execution_ssh_port'
-    value: 1905
+    value: 22

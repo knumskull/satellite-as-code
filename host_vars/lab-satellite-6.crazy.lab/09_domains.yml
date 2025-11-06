@@ -1,8 +1,8 @@
 ---
 # Define the Domains
 satellite_domains:
-  - name: 'office.int.scheib.me'
-    description: 'office.int.scheib.me'
+  - name: 'crazy.lab'
+    description: 'crazy.lab'
     locations:
       - '{{ satellite_location }}'
     organizations:

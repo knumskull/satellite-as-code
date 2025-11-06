@@ -21,12 +21,6 @@ satellite_activation_keys:
       - label: 'satellite-client-6-for-rhel-8-x86_64-rpms'
         override: 'enabled'
 
-      - label: 'org-core_prd-elastic-elastic_repo-elastic-elastic-8-el-8'
-        override: 'enabled'
-
-      - label: 'org-core_prd-zabbix-zabbix_repo-zabbix-zabbix-6_0-rhel-8'
-        override: 'enabled'
-
   - name: 'ak-ansible_automation_platform-rhel-8-prod'
     description: 'Ansible Automation Platform hosts'
     lifecycle_environment: 'lce-default-prod'
@@ -37,17 +31,12 @@ satellite_activation_keys:
     purpose_usage: 'Production'
     purpose_role: 'Red Hat Enterprise Linux Server'
     content_overrides:
-      - label: 'ansible-automation-platform-2.3-for-rhel-8-x86_64-rpms'
+      - label: 'ansible-automation-platform-2.5-for-rhel-8-x86_64-rpms'
         override: 'enabled'
 
       - label: 'satellite-client-6-for-rhel-8-x86_64-rpms'
         override: 'enabled'
 
-      - label: 'org-core_prd-elastic-elastic_repo-elastic-elastic-8-el-8'
-        override: 'enabled'
-
-      - label: 'org-core_prd-zabbix-zabbix_repo-zabbix-zabbix-6_0-rhel-8'
-        override: 'enabled'
 
   - name: 'ak-ansible_automation_platform-rhel-9-dev'
     description: 'Ansible Automation Platform hosts'
@@ -59,13 +48,10 @@ satellite_activation_keys:
     purpose_usage: 'Production'
     purpose_role: 'Red Hat Enterprise Linux Server'
     content_overrides:
-      - label: 'ansible-automation-platform-2.3-for-rhel-9-x86_64-rpms'
+      - label: 'ansible-automation-platform-2.6-for-rhel-9-x86_64-rpms'
         override: 'enabled'
 
       - label: 'satellite-client-6-for-rhel-9-x86_64-rpms'
-        override: 'enabled'
-
-      - label: 'org-core_prd-zabbix-zabbix_repo-zabbix-zabbix-6_0-rhel-9'
         override: 'enabled'
 
   - name: 'ak-ansible_automation_platform-rhel-9-prod'
@@ -78,14 +64,12 @@ satellite_activation_keys:
     purpose_usage: 'Production'
     purpose_role: 'Red Hat Enterprise Linux Server'
     content_overrides:
-      - label: 'ansible-automation-platform-2.3-for-rhel-9-x86_64-rpms'
+      - label: 'ansible-automation-platform-2.6-for-rhel-9-x86_64-rpms'
         override: 'enabled'
 
       - label: 'satellite-client-6-for-rhel-9-x86_64-rpms'
         override: 'enabled'
 
-      - label: 'org-core_prd-zabbix-zabbix_repo-zabbix-zabbix-6_0-rhel-9'
-        override: 'enabled'
 
   - name: 'ak-default-rhel-8-dev'
     description: "All hosts which don't have a specialized host group"
@@ -98,12 +82,6 @@ satellite_activation_keys:
     purpose_role: 'Red Hat Enterprise Linux Server'
     content_overrides:
       - label: 'satellite-client-6-for-rhel-8-x86_64-rpms'
-        override: 'enabled'
-
-      - label: 'org-core_prd-elastic-elastic_repo-elastic-elastic-8-el-8'
-        override: 'enabled'
-
-      - label: 'org-core_prd-zabbix-zabbix_repo-zabbix-zabbix-6_0-rhel-8'
         override: 'enabled'
 
   - name: 'ak-default-rhel-8-prod'
@@ -119,12 +97,6 @@ satellite_activation_keys:
       - label: 'satellite-client-6-for-rhel-8-x86_64-rpms'
         override: 'enabled'
 
-      - label: 'org-core_prd-elastic-elastic_repo-elastic-elastic-8-el-8'
-        override: 'enabled'
-
-      - label: 'org-core_prd-zabbix-zabbix_repo-zabbix-zabbix-6_0-rhel-8'
-        override: 'enabled'
-
   - name: 'ak-default-rhel-9-dev'
     description: "All hosts which don't have a specialized host group"
     lifecycle_environment: 'lce-default-dev'
@@ -138,7 +110,7 @@ satellite_activation_keys:
       - label: 'satellite-client-6-for-rhel-9-x86_64-rpms'
         override: 'enabled'
 
-      - label: 'org-core_prd-zabbix-zabbix_repo-zabbix-zabbix-6_0-rhel-9'
+      - label: 'org-core_prd-epel-epel_repo-epel-epel-rhel'
         override: 'enabled'
 
   - name: 'ak-default-rhel-9-prod'
@@ -154,5 +126,38 @@ satellite_activation_keys:
       - label: 'satellite-client-6-for-rhel-9-x86_64-rpms'
         override: 'enabled'
 
-      - label: 'org-core_prd-zabbix-zabbix_repo-zabbix-zabbix-6_0-rhel-9'
+      - label: 'org-core_prd-epel-epel_repo-epel-epel-rhel'
+        override: 'enabled'
+
+
+  - name: 'ak-default-rhel-10-dev'
+    description: "All hosts which don't have a specialized host group"
+    lifecycle_environment: 'lce-default-dev'
+    content_view: 'ccv-default-rhel-10'
+    release_version: 10
+    unlimited_hosts: true
+    service_level: 'Self-Support'
+    purpose_usage: 'Production'
+    purpose_role: 'Red Hat Enterprise Linux Server'
+    content_overrides:
+      - label: 'satellite-client-6-for-rhel-10-x86_64-rpms'
+        override: 'enabled'
+
+      - label: 'org-core_prd-epel-epel_repo-epel-epel-rhel'
+        override: 'enabled'
+
+  - name: 'ak-default-rhel-10-prod'
+    description: "All hosts which don't have a specialized host group"
+    lifecycle_environment: 'lce-default-prod'
+    content_view: 'ccv-default-rhel-10'
+    release_version: 10
+    unlimited_hosts: true
+    service_level: 'Self-Support'
+    purpose_usage: 'Production'
+    purpose_role: 'Red Hat Enterprise Linux Server'
+    content_overrides:
+      - label: 'satellite-client-6-for-rhel-10-x86_64-rpms'
+        override: 'enabled'
+
+      - label: 'org-core_prd-epel-epel_repo-epel-epel-rhel'
         override: 'enabled'
