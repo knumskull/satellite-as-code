@@ -67,6 +67,7 @@
           ansible.builtin.dnf:
             name: '*'
             state: 'latest'
+            update_only: true  # to avoid installing additional packages
           register: '_t_update'
 
         - name: 'Install Satellite package'
