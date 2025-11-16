@@ -28,7 +28,7 @@ satellite_installer_package: 'satellite-installer'
 satellite_installer_timeout: '3600'
 
 # Options to pass to the installer
-satellite_installer_options:
+satellite_installer_options_base:
   - '--foreman-initial-organization {{ sat_initial_organization }}'  # Initial Organization to create
   - '--foreman-initial-location {{ sat_initial_location }}'  # Initial Location to create
   - '--foreman-initial-admin-username {{ sat_initial_user }}'  # Initial user to create
@@ -46,3 +46,13 @@ satellite_installer_options:
   - '--enable-foreman-plugin-discovery'  # Whether to enable Satellite discovery
   - '--enable-foreman-proxy-plugin-discovery'  # Whether to enable Satellite discovery
   - '--foreman-proxy-http true'  # Serve content via HTTP and HTTPS (default)
+
+satellite_installer_options_scap:
+  - '--enable-foreman-proxy-plugin-openscap'  # Enable OpenScap Satellite Plugin
+  - '--foreman-proxy-plugin-openscap-ansible-module false'  # Whether to enable OpenScap Ansible module 
+  - '--foreman-proxy-plugin-openscap-puppet-module true'  # Whether to enable OpenScap Puppet module
+
+satellite_installer_options: >-
+  {{ satellite_installer_options_base +
+     (sat_scap_enable_foreman_ansible_role | bool |
+        ternary(satellite_installer_options_scap, [])) }}
