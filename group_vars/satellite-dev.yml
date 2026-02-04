@@ -1,6 +1,6 @@
 ---
 satellite_organization: "CRAZY.LAB"
-satellite_initial_location: "LOCAL"
+satellite_initial_location: "loc-local"
 
 
 satellite_products:
@@ -73,7 +73,7 @@ satellite_hostgroups:
     ptable: "Kickstart default"
     pxe_loader: "Grub2 UEFI"
     locations:
-      - "LOCAL"
+      - "loc-local"
     organization: "CRAZY.LAB"
     activation_keys: "AK-RHEL-9-DEV"
 

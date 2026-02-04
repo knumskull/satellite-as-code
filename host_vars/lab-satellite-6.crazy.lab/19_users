@@ -1,0 +1,23 @@
+vault_aap_service_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          30633639393437303336333539383436623735646331323264313763386366663264633563336637
+          6637383364656362666162326131643664636236333363320a363032316436323638306632353636
+          34306438643866303435613031333532316430323934356334313533393939643837303865633863
+          6439393939383865350a343638613830636639386439656662633636336433646331393132353465
+          39393561383735313033653339353365396164363563646233336462346537613130
+
+sat_users:
+  - name: "svc-aap-inventory"
+    firstname: "AAP"
+    lastname: "Service Account"
+    mail: "aap-service@crazy.lab"
+    auth_source: "Internal"
+    password: "{{ vault_aap_service_password }}"
+    admin: false
+    roles:
+      - "AAP Inventory Reader"
+    locations:
+      - '{{ sat_initial_location }}'
+    organizations:
+      - '{{ sat_initial_organization }}'
+    state: present

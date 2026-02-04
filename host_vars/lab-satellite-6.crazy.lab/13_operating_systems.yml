@@ -9,22 +9,23 @@ satellite_operatingsystems:
     password_hash: 'SHA256'
     default_templates:
       - template_kind: 'iPXE'
-        provisioning_template: 'pvt-ipxe'
+        provisioning_template: 'Kickstart default iPXE'
         state: 'present'
 
       - template_kind: 'PXELinux'
-        provisioning_template: 'pvt-pxelinux'
+        provisioning_template: 'Kickstart default PXELinux'
         state: 'present'
 
       - template_kind: 'provision'
-        provisioning_template: 'pvt-provisioning'
+        provisioning_template: 'Kickstart default'
         state: 'present'
 
       - template_kind: 'finish'
         state: 'absent'
 
       - template_kind: 'host_init_config'
-        state: 'absent'
+        provisioning_template: 'Linux host_init_config default'
+        state: 'present'
 
       - template_kind: 'kexec'
         state: 'absent'
@@ -46,22 +47,23 @@ satellite_operatingsystems:
     password_hash: 'SHA256'
     default_templates:
       - template_kind: 'iPXE'
-        provisioning_template: 'pvt-ipxe'
+        provisioning_template: 'Kickstart default iPXE'
         state: 'present'
 
       - template_kind: 'PXELinux'
-        provisioning_template: 'pvt-pxelinux'
+        provisioning_template: 'Kickstart default PXELinux'
         state: 'present'
 
       - template_kind: 'provision'
-        provisioning_template: 'pvt-provisioning'
+        provisioning_template: 'Kickstart default'
         state: 'present'
 
       - template_kind: 'finish'
         state: 'absent'
 
       - template_kind: 'host_init_config'
-        state: 'absent'
+        provisioning_template: 'Linux host_init_config default'
+        state: 'present'
 
       - template_kind: 'kexec'
         state: 'absent'
@@ -83,22 +85,23 @@ satellite_operatingsystems:
     password_hash: 'SHA256'
     default_templates:
       - template_kind: 'iPXE'
-        provisioning_template: 'pvt-ipxe'
+        provisioning_template: 'Kickstart default iPXE'
         state: 'present'
 
       - template_kind: 'PXELinux'
-        provisioning_template: 'pvt-pxelinux'
+        provisioning_template: 'Kickstart default PXELinux'
         state: 'present'
 
       - template_kind: 'provision'
-        provisioning_template: 'pvt-provisioning'
+        provisioning_template: 'Kickstart default'
         state: 'present'
 
       - template_kind: 'finish'
         state: 'absent'
 
       - template_kind: 'host_init_config'
-        state: 'absent'
+        provisioning_template: 'Linux host_init_config default'
+        state: 'present'
 
       - template_kind: 'kexec'
         state: 'absent'

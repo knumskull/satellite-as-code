@@ -20,3 +20,57 @@ satellite_subnets:
       - '{{ satellite_organization }}'
     locations:
       - '{{ satellite_location }}'
+
+  - name: 'sn-172_16_30_0'
+    network: '172.16.30.0'
+    mask: '255.255.255.224'
+    gateway: '172.16.30.1'
+    boot_mode: 'Static'
+    ipam: 'None'
+    tftp_proxy: '{{ inventory_hostname }}'
+    discovery_proxy: '{{ inventory_hostname }}'
+    remote_execution_proxies:
+      - '{{ inventory_hostname }}'
+    dns_primary: '172.16.30.1'
+    domains:
+      - 'customer.prod'
+    organizations:
+      - '{{ satellite_organization }}'
+    locations:
+      - '{{ satellite_location }}'
+
+  - name: 'sn-172_16_31_0'
+    network: '172.16.31.0'
+    mask: '255.255.255.224'
+    gateway: '172.16.31.1'
+    boot_mode: 'Static'
+    ipam: 'None'
+    tftp_proxy: '{{ inventory_hostname }}'
+    discovery_proxy: '{{ inventory_hostname }}'
+    remote_execution_proxies:
+      - '{{ inventory_hostname }}'
+    dns_primary: '172.16.31.1'
+    domains:
+      - 'customer.stor'
+    organizations:
+      - '{{ satellite_organization }}'
+    locations:
+      - '{{ satellite_location }}'
+
+  - name: 'sn-172_16_32_0'
+    network: '172.16.32.0'
+    mask: '255.255.255.224'
+    gateway: '172.16.32.1'
+    boot_mode: 'Static'
+    ipam: 'None'
+    tftp_proxy: '{{ inventory_hostname }}'
+    discovery_proxy: '{{ inventory_hostname }}'
+    remote_execution_proxies:
+      - '{{ inventory_hostname }}'
+    dns_primary: '172.16.32.1'
+    domains:
+      - 'customer.sap'
+    organizations:
+      - '{{ satellite_organization }}'
+    locations:
+      - '{{ satellite_location }}'      

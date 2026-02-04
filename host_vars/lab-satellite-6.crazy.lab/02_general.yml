@@ -3,7 +3,7 @@
 
 # Whether to validate certificates when connecting to Satellite
 # (needs to be turned off if you have self-signed certificates and haven't imported the CA)
-satellite_validate_certs: true
+satellite_validate_certs: false
 
 # Satellite URL
 satellite_server_url: 'https://{{ inventory_hostname }}'

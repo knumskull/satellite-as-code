@@ -1,0 +1,22 @@
+---
+- name: 'Configure roles in a Red Hat Satellite'
+  hosts: 'all'
+  gather_facts: false
+
+  tasks:
+    - name: 'Configure Roles'
+      redhat.satellite.role:
+        username: '{{ satellite_username }}'
+        password: '{{ satellite_password }}'
+        server_url: '{{ satellite_server_url }}'
+        validate_certs: '{{ satellite_validate_certs }}'
+        name: '{{ __t_role.name }}'
+        description: '{{ __t_role.description | default(omit) }}'
+        locations: '{{ __t_role.locations | default(omit) }}'
+        organizations: '{{ __t_role.organizations | default(omit) }}'
+        filters: '{{ __t_role.filters | default(omit) }}'
+        state: '{{ __t_role.state | default("present") }}'
+      loop: '{{ sat_roles }}'
+      loop_control:
+        loop_var: '__t_role'
+        label: '{{ __t_role.name }}'

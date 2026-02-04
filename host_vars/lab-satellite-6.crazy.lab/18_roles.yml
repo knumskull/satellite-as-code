@@ -1,0 +1,88 @@
+sat_roles:
+  - name: "AAP Inventory Reader"
+    description: "Read-only access for AAP inventory synchronization"
+    locations:
+      - '{{ sat_initial_location }}'
+    organizations:
+      - '{{ sat_initial_organization }}'
+    filters:
+      - permissions:
+          - view_hosts
+        search: "name ~ lab-rhel"
+      - permissions:
+          - view_hostgroups
+      - permissions:
+          - view_locations
+      - permissions:
+          - view_organizations
+      - permissions:
+          - view_facts
+    state: present
+
+  - name: "MCP API Reader"
+    description: "Read-only API access for MCP server integration"
+    locations:
+    locations:
+      - '{{ sat_initial_location }}'
+    organizations:
+      - '{{ sat_initial_organization }}'
+    filters:
+      # Core infrastructure
+      - permissions:
+          - view_organizations
+      - permissions:
+          - view_locations
+      - permissions:
+          - view_hosts
+      - permissions:
+          - view_hostgroups
+      - permissions:
+          - view_domains
+      - permissions:
+          - view_subnets
+      - permissions:
+          - view_smart_proxies
+      # Operating systems & provisioning
+      - permissions:
+          - view_operatingsystems
+      - permissions:
+          - view_architectures
+      - permissions:
+          - view_media
+      - permissions:
+          - view_provisioning_templates
+      - permissions:
+          - view_ptables
+      # Templates & reports
+      - permissions:
+          - view_job_templates
+      - permissions:
+          - view_report_templates
+      - permissions:
+          - view_config_reports
+      # Katello / Content management
+      - permissions:
+          - view_activation_keys
+      - permissions:
+          - view_lifecycle_environments
+      - permissions:
+          - view_content_views
+      - permissions:
+          - view_products
+      - permissions:
+          - view_subscriptions
+      # Compute resources
+      - permissions:
+          - view_compute_resources
+      - permissions:
+          - view_compute_profiles
+      # Users & roles
+      - permissions:
+          - view_usergroups
+      - permissions:
+          - view_users
+      - permissions:
+          - view_roles
+      - permissions:
+          - view_filters
+    state: present

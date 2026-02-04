@@ -110,7 +110,7 @@ satellite_activation_keys:
       - label: 'satellite-client-6-for-rhel-9-x86_64-rpms'
         override: 'enabled'
 
-      - label: 'org-core_prd-epel-epel_repo-epel-epel-rhel'
+      - label: 'CRAZY_LAB_prd-epel-epel_repo-epel-epel-9-rhel-9'
         override: 'enabled'
 
   - name: 'ak-default-rhel-9-prod'
@@ -126,7 +126,7 @@ satellite_activation_keys:
       - label: 'satellite-client-6-for-rhel-9-x86_64-rpms'
         override: 'enabled'
 
-      - label: 'org-core_prd-epel-epel_repo-epel-epel-rhel'
+      - label: 'CRAZY_LAB_prd-epel-epel_repo-epel-epel-9-rhel-9'
         override: 'enabled'
 
 
@@ -143,7 +143,7 @@ satellite_activation_keys:
       - label: 'satellite-client-6-for-rhel-10-x86_64-rpms'
         override: 'enabled'
 
-      - label: 'org-core_prd-epel-epel_repo-epel-epel-rhel'
+      - label: 'CRAZY_LAB_prd-epel-epel_repo-epel-epel-10-rhel-10'
         override: 'enabled'
 
   - name: 'ak-default-rhel-10-prod'
@@ -159,5 +159,5 @@ satellite_activation_keys:
       - label: 'satellite-client-6-for-rhel-10-x86_64-rpms'
         override: 'enabled'
 
-      - label: 'org-core_prd-epel-epel_repo-epel-epel-rhel'
+      - label: 'CRAZY_LAB_prd-epel-epel_repo-epel-epel-10-rhel-10'
         override: 'enabled'
