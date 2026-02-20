@@ -19,8 +19,16 @@ sat_products:
       - name: 'Red Hat Enterprise Linux 10 for x86_64 - AppStream (Kickstart)'
         releasever: '10.0'
         download_policy: 'immediate'
+    
+      - name: 'Red Hat Enterprise Linux 9 for x86_64 - High Availability (RPMs)'
+        releasever: '9'
+        download_policy: 'on_demand'
 
       - name: 'Red Hat Satellite Client 6 for RHEL 10 x86_64 (RPMs)'
+        download_policy: 'on_demand'
+
+      - name: 'Red Hat Enterprise Linux 10 for x86_64 - Extensions (RPMs)'
+        releasever: '10'
         download_policy: 'on_demand'
 
       - name: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)'
@@ -42,6 +50,10 @@ sat_products:
       - name: 'Red Hat Satellite Client 6 for RHEL 9 x86_64 (RPMs)'
         download_policy: 'on_demand'
 
+      - name: 'Red Hat Enterprise Linux 9 for x86_64 - Extensions (RPMs)'
+        releasever: '9'
+        download_policy: 'on_demand'
+
       - name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)'
         releasever: '8'
         download_policy: 'on_demand'
@@ -59,6 +71,12 @@ sat_products:
         download_policy: 'immediate'
 
       - name: 'Red Hat Satellite Client 6 for RHEL 8 x86_64 (RPMs)'
+        download_policy: 'on_demand'
+
+  - name: 'Red Hat Enterprise Linux High Availability for x86_64'
+    repository_sets:
+      - name: 'Red Hat Enterprise Linux 9 for x86_64 - High Availability (RPMs)'
+        releasever: '9'
         download_policy: 'on_demand'
 
   - name: 'Red Hat Ansible Automation Platform'
