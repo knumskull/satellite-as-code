@@ -22,7 +22,6 @@ sat_roles:
   - name: "MCP API Reader"
     description: "Read-only API access for MCP server integration"
     locations:
-    locations:
       - '{{ sat_initial_location }}'
     organizations:
       - '{{ sat_initial_organization }}'
