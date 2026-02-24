@@ -48,6 +48,7 @@ satellite_installer_options_base:
   - '--enable-foreman-plugin-discovery'  # Whether to enable Satellite discovery
   - '--enable-foreman-proxy-plugin-discovery'  # Whether to enable Satellite discovery
   - '--enable-foreman-plugin-remote-execution'  # Whether to enable Remote Execution
+  - '--enable-foreman-proxy-plugin-remote-execution-script'  # Enable the SSH script provider for Remote Execution
 
 satellite_installer_options_scap:
   - '--enable-foreman-proxy-plugin-openscap'  # Enable OpenScap Satellite Plugin

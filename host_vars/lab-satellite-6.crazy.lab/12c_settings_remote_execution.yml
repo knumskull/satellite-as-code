@@ -6,3 +6,9 @@ sat_settings_remote_execution:
 
   - name: 'remote_execution_ssh_port'
     value: 22
+
+  - name: 'remote_execution_effective_user'
+    value: 'root'
+
+  - name: 'remote_execution_effective_user_method'
+    value: 'sudo'
