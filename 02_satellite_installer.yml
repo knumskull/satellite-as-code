@@ -81,3 +81,35 @@
           when: >
             _t_update.changed is defined
             and _t_update.changed
+
+  post_tasks:
+    - name: 'Handle Remote Execution SSH key deployment'
+      become: true
+      when: >
+        sat_remote_execution_ssh_private_key is defined
+        and sat_remote_execution_ssh_private_key | length > 0
+      block:
+
+        - name: 'Ensure foreman-proxy .ssh directory exists'
+          ansible.builtin.file:
+            path: '/usr/share/foreman-proxy/.ssh'
+            state: 'directory'
+            owner: 'foreman-proxy'
+            group: 'foreman-proxy'
+            mode: '0700'
+
+        - name: 'Deploy Remote Execution SSH private key for foreman-proxy'
+          ansible.builtin.copy:
+            content: '{{ sat_remote_execution_ssh_private_key }}'
+            dest: '/usr/share/foreman-proxy/.ssh/id_rsa_foreman_proxy'
+            owner: 'foreman-proxy'
+            group: 'foreman-proxy'
+            mode: '0600'
+
+        - name: 'Deploy Remote Execution SSH public key for foreman-proxy'
+          ansible.builtin.copy:
+            content: '{{ sat_remote_execution_ssh_public_key }}'
+            dest: '/usr/share/foreman-proxy/.ssh/id_rsa_foreman_proxy.pub'
+            owner: 'foreman-proxy'
+            group: 'foreman-proxy'
+            mode: '0600'
