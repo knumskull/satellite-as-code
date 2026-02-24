@@ -42,15 +42,17 @@ satellite_installer_options_base:
   - '--foreman-proxy-tftp true'  # Satellite should provide TFTP
   - '--foreman-proxy-tftp-servername={{ inventory_hostname }}'  # Name of the TFTP server
   - '--foreman-proxy-tftp-listen-on both'  # We want to serve both HTTP and HTTPS
+  - '--foreman-proxy-httpboot true'  # Enable HTTPBoot
+  - '--foreman-proxy-http true'  # Serve content via HTTP and HTTPS (default)
   - '--foreman-proxy-templates true'  # Enable the builtin Template Capsule
   - '--enable-foreman-plugin-discovery'  # Whether to enable Satellite discovery
   - '--enable-foreman-proxy-plugin-discovery'  # Whether to enable Satellite discovery
-  - '--foreman-proxy-http true'  # Serve content via HTTP and HTTPS (default)
+  - '--enable-foreman-plugin-remote-execution'  # Whether to enable Remote Execution
 
 satellite_installer_options_scap:
   - '--enable-foreman-proxy-plugin-openscap'  # Enable OpenScap Satellite Plugin
-  - '--foreman-proxy-plugin-openscap-ansible-module false'  # Whether to enable OpenScap Ansible module 
-  - '--foreman-proxy-plugin-openscap-puppet-module true'  # Whether to enable OpenScap Puppet module
+  - '--foreman-proxy-plugin-openscap-ansible-module true'  # Whether to enable OpenScap Ansible module 
+  - '--foreman-proxy-plugin-openscap-puppet-module false'  # Whether to enable OpenScap Puppet module
 
 satellite_installer_options: >-
   {{ satellite_installer_options_base +
