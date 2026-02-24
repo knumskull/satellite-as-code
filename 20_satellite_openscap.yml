@@ -70,152 +70,6 @@
           until: __t_roles.json.results | selectattr('name', 'match', sat_scap_foreman_role_name) | length == 1
 
 
-    # - name: 'Handle unpacking and importing OpenSCAP content'
-    #   when:
-    #     sat_scap_content_files is defined and
-    #     sat_scap_content_files | length > 0
-    #   block:
-
-    #     - name: 'Download and unpack OpenSCAP content'
-    #       ansible.builtin.unarchive:
-    #         src: '{{ __t_content.url }}'
-    #         dest: '{{ sat_scap_content_download_path }}'
-    #         mode: 0600
-    #         remote_src: true
-    #       loop: '{{ sat_scap_content_files }}'
-    #       loop_control:
-    #         loop_var: '__t_content'
-    #         label: '{{ __t_content.name }}'
-    #       delegate_to: 'localhost'
-
-    #     - name: 'Generate digest hashes of OpenSCAP content'
-    #       ansible.builtin.set_fact:
-    #         __t_scap_content_digests: >-
-    #           {{
-    #             __t_scap_content_digests | default([]) +
-    #             [
-    #               item | combine(
-    #                 {
-    #                   'digest': lookup('file', sat_scap_content_download_path ~ '/' ~ item.url | basename | regex_replace('.zip$', '.xml')) | hash('sha256'),
-    #                   'file': sat_scap_content_download_path ~ '/' ~ item.url | basename | regex_replace('.zip$', '.xml')
-    #                 }
-    #               )
-    #             ]
-    #           }}
-    #       loop: '{{ sat_scap_content_files }}'
-
-    #     - name: 'Get populated OpenSCAP contents of {{ inventory_hostname }}'
-    #       ansible.builtin.uri:
-    #         url: '{{ satellite_server_url }}/api/v2/compliance/scap_contents'
-    #         user: '{{ satellite_username }}'
-    #         password: '{{ satellite_password }}'
-    #         validate_certs: '{{ satellite_validate_certs }}'
-    #         method: 'GET'
-    #         force_basic_auth: true
-    #         body_format: 'json'
-    #       delegate_to: 'localhost'
-    #       register: '__t_available_scap_contents'
-
-    #     - name: 'Ensure returned contents have the correct data type'
-    #       ansible.builtin.assert:
-    #         that:
-    #           - __t_available_scap_contents.json.results is defined
-    #           - __t_available_scap_contents.json.results is not string
-    #           - __t_available_scap_contents.json.results is not mapping
-    #           - __t_available_scap_contents.json.results is iterable
-
-    #     - name: 'Handle updating and creating OpenSCAP content'
-    #       block:
-
-    #         - name: 'Create OpenSCAP content {{ __t_content.name }}'
-    #           ansible.builtin.uri:
-    #             url: '{{ satellite_server_url }}/api/v2/compliance/scap_contents'
-    #             user: '{{ satellite_username }}'
-    #             password: '{{ satellite_password }}'
-    #             validate_certs: '{{ satellite_validate_certs }}'
-    #             method: 'POST'
-    #             body: |
-    #               {{
-    #                 {
-    #                   'scap_content': {
-    #                     'title': __t_content.name,
-    #                     'scap_file': lookup('file', __t_content.file),
-    #                     'original_filename': __t_content.file | basename
-    #                   }
-    #                 }
-    #               }}
-    #             force_basic_auth: true
-    #             body_format: 'json'
-    #             status_code: 201
-    #           changed_when: true
-    #           when: >
-    #             __t_available_scap_contents.json.results | selectattr('title', 'equalto', __t_content.name) | length == 0
-    #           delegate_to: 'localhost'
-    #           loop: '{{ __t_scap_content_digests }}'
-    #           loop_control:
-    #             loop_var: '__t_content'
-    #             label: '{{ __t_content.name }}'
-
-    #         - name: 'Delete OpenSCAP content {{ __t_conent.name }}'
-    #           ansible.builtin.uri:
-    #             url: '{{ satellite_server_url }}/api/v2/compliance/scap_contents/{{ __t_content.1.id }}'
-    #             user: '{{ satellite_username }}'
-    #             password: '{{ satellite_password }}'
-    #             validate_certs: '{{ satellite_validate_certs }}'
-    #             method: 'DELETE'
-    #             force_basic_auth: true
-    #             body_format: 'json'
-    #           changed_when: true
-    #           when: >
-    #             __t_content.0.name == __t_content.1.title
-    #             and __t_content.0.digest != __t_content.1.digest
-    #           delegate_to: 'localhost'
-    #           loop: '{{ __t_scap_content_digests | product(__t_available_scap_contents.json.results) }}'
-    #           loop_control:
-    #             loop_var: '__t_content'
-    #             label: "{{ __t_content.0.name ~ '->' ~ __t_content.1.title }}"
-
-    #         - name: 'Re-create OpenSCAP content {{ __t_content.name }}'
-    #           ansible.builtin.uri:
-    #             url: '{{ satellite_server_url }}/api/v2/compliance/scap_contents'
-    #             user: '{{ satellite_username }}'
-    #             password: '{{ satellite_password }}'
-    #             validate_certs: '{{ satellite_validate_certs }}'
-    #             method: 'POST'
-    #             body: |
-    #               {{
-    #                 {
-    #                   'scap_content': {
-    #                     'title': __t_content.0.name,
-    #                     'scap_file': lookup('file', __t_content.0.file),
-    #                     'original_filename': __t_content.0.file | basename
-    #                   }
-    #                 }
-    #               }}
-    #             force_basic_auth: true
-    #             body_format: 'json'
-    #             status_code: 201
-    #           changed_when: true
-    #           when: >
-    #             __t_content.0.name == __t_content.1.title
-    #             and __t_content.0.digest != __t_content.1.digest
-    #           delegate_to: 'localhost'
-    #           loop: '{{ __t_scap_content_digests | product(__t_available_scap_contents.json.results) }}'
-    #           loop_control:
-    #             loop_var: '__t_content'
-    #             label: "{{ __t_content.0.name ~ '->' ~ __t_content.1.title }}"
-
-    #         - name: 'Cleanup downloaded files'
-    #           ansible.builtin.file:
-    #             path: "{{ sat_scap_content_download_path ~ '/' ~ item.url | basename | splitext | first ~ '.xml' }}"
-    #             state: 'absent'
-    #           become: true
-    #           delegate_to: 'localhost'
-    #           loop: '{{ sat_scap_content_files }}'
-    #           when: >
-    #             sat_scap_cleanup_temp_files is defined
-    #             and sat_scap_cleanup_temp_files
-
     - name: 'Enable default OpenSCAP content provided by Satellite'
       ansible.builtin.uri:
         url: '{{ satellite_server_url }}/api/v2/compliance/scap_contents/bulk_upload'
@@ -235,3 +89,184 @@
       when: >
         sat_scap_enable_default_content is defined
         and sat_scap_enable_default_content
+
+
+    - name: 'Handle creation of OpenSCAP compliance policies'
+      when: >
+        sat_scap_compliance_policies is defined
+        and sat_scap_compliance_policies | length > 0
+      block:
+
+        - name: 'Retrieve available SCAP contents'
+          ansible.builtin.uri:
+            url: '{{ satellite_server_url }}/api/v2/compliance/scap_contents?per_page=1000'
+            user: '{{ satellite_username }}'
+            password: '{{ satellite_password }}'
+            validate_certs: '{{ satellite_validate_certs }}'
+            method: 'GET'
+            force_basic_auth: true
+            body_format: 'json'
+          delegate_to: 'localhost'
+          register: '__t_scap_contents'
+
+        - name: 'Retrieve available SCAP content profiles'
+          ansible.builtin.uri:
+            url: '{{ satellite_server_url }}/api/v2/compliance/scap_content_profiles?per_page=1000'
+            user: '{{ satellite_username }}'
+            password: '{{ satellite_password }}'
+            validate_certs: '{{ satellite_validate_certs }}'
+            method: 'GET'
+            force_basic_auth: true
+            body_format: 'json'
+          delegate_to: 'localhost'
+          register: '__t_scap_profiles'
+
+        - name: 'Build SCAP content title to ID lookup'
+          ansible.builtin.set_fact:
+            __t_scap_content_ids: >-
+              {{
+                dict(
+                  __t_scap_contents.json.results | map(attribute='title')
+                  | zip(__t_scap_contents.json.results | map(attribute='id'))
+                )
+              }}
+
+        - name: 'Build SCAP content profile lookup: {{ __t_profile.scap_content.title }} -> {{ __t_profile.profile_id }}'
+          ansible.builtin.set_fact:
+            __t_scap_profile_ids: >-
+              {{
+                __t_scap_profile_ids | default({})
+                | combine({
+                  __t_profile.scap_content.title ~ '::' ~ __t_profile.profile_id: __t_profile.id
+                })
+              }}
+          loop: '{{ __t_scap_profiles.json.results }}'
+          loop_control:
+            loop_var: '__t_profile'
+            label: '{{ __t_profile.scap_content.title ~ " -> " ~ __t_profile.profile_id }}'
+
+        - name: 'Retrieve organizations'
+          ansible.builtin.uri:
+            url: '{{ satellite_server_url }}/api/v2/organizations?per_page=1000'
+            user: '{{ satellite_username }}'
+            password: '{{ satellite_password }}'
+            validate_certs: '{{ satellite_validate_certs }}'
+            method: 'GET'
+            force_basic_auth: true
+            body_format: 'json'
+          delegate_to: 'localhost'
+          register: '__t_organizations'
+
+        - name: 'Retrieve locations'
+          ansible.builtin.uri:
+            url: '{{ satellite_server_url }}/api/v2/locations?per_page=1000'
+            user: '{{ satellite_username }}'
+            password: '{{ satellite_password }}'
+            validate_certs: '{{ satellite_validate_certs }}'
+            method: 'GET'
+            force_basic_auth: true
+            body_format: 'json'
+          delegate_to: 'localhost'
+          register: '__t_locations'
+
+        - name: 'Retrieve hostgroups'
+          ansible.builtin.uri:
+            url: '{{ satellite_server_url }}/api/v2/hostgroups?per_page=1000'
+            user: '{{ satellite_username }}'
+            password: '{{ satellite_password }}'
+            validate_certs: '{{ satellite_validate_certs }}'
+            method: 'GET'
+            force_basic_auth: true
+            body_format: 'json'
+          delegate_to: 'localhost'
+          register: '__t_hostgroups'
+
+        - name: 'Build name-to-ID lookups'
+          ansible.builtin.set_fact:
+            __t_org_ids: >-
+              {{
+                dict(
+                  __t_organizations.json.results | map(attribute='name')
+                  | zip(__t_organizations.json.results | map(attribute='id'))
+                )
+              }}
+            __t_loc_ids: >-
+              {{
+                dict(
+                  __t_locations.json.results | map(attribute='name')
+                  | zip(__t_locations.json.results | map(attribute='id'))
+                )
+              }}
+            __t_hg_ids: >-
+              {{
+                dict(
+                  __t_hostgroups.json.results | map(attribute='title')
+                  | zip(__t_hostgroups.json.results | map(attribute='id'))
+                )
+              }}
+
+        - name: 'Retrieve existing compliance policies'
+          ansible.builtin.uri:
+            url: '{{ satellite_server_url }}/api/v2/compliance/policies?per_page=1000'
+            user: '{{ satellite_username }}'
+            password: '{{ satellite_password }}'
+            validate_certs: '{{ satellite_validate_certs }}'
+            method: 'GET'
+            force_basic_auth: true
+            body_format: 'json'
+          delegate_to: 'localhost'
+          register: '__t_existing_policies'
+
+        - name: 'Create compliance policy: {{ __t_policy.name }}'
+          ansible.builtin.uri:
+            url: '{{ satellite_server_url }}/api/v2/compliance/policies'
+            user: '{{ satellite_username }}'
+            password: '{{ satellite_password }}'
+            validate_certs: '{{ satellite_validate_certs }}'
+            method: 'POST'
+            body: |
+              {{
+                {
+                  'policy':
+                    {
+                      'name': __t_policy.name,
+                      'description': __t_policy.description | default(''),
+                      'scap_content_id': __t_scap_content_ids[__t_policy.scap_content],
+                      'scap_content_profile_id': __t_scap_profile_ids[__t_policy.scap_content ~ '::' ~ __t_policy.scap_content_profile],
+                      'period': __t_policy.period,
+                      'deploy_by': __t_policy.deploy_by,
+                      'organization_ids': __t_policy.organizations | map('extract', __t_org_ids) | list,
+                      'location_ids': __t_policy.locations | map('extract', __t_loc_ids) | list,
+                      'hostgroup_ids': __t_policy.hostgroups | map('extract', __t_hg_ids) | list
+                    }
+                    | combine(
+                      {'weekday': __t_policy.weekday}
+                      if __t_policy.period == 'weekly' and __t_policy.weekday is defined
+                      else {}
+                    )
+                    | combine(
+                      {'day_of_month': __t_policy.day_of_month}
+                      if __t_policy.period == 'monthly' and __t_policy.day_of_month is defined
+                      else {}
+                    )
+                    | combine(
+                      {'cron_line': __t_policy.cron_line}
+                      if __t_policy.period == 'custom' and __t_policy.cron_line is defined
+                      else {}
+                    )
+                }
+
+              }}
+            force_basic_auth: true
+            body_format: 'json'
+            status_code: 201
+          changed_when: true
+          delegate_to: 'localhost'
+          when: >
+            __t_existing_policies.json.results
+            | selectattr('name', 'equalto', __t_policy.name)
+            | length == 0
+          loop: '{{ sat_scap_compliance_policies }}'
+          loop_control:
+            loop_var: '__t_policy'
+            label: '{{ __t_policy.name }}'
