@@ -35,10 +35,10 @@ ansible-galaxy collection install -r collections/requirements.yml
 
 ```
 .
-├── site.yml                          # Full deployment (imports all playbooks in order)
 ├── 01_register_satellite.yml         # RHEL registration via RHC
-├── 02_satellite_installer.yml        # Satellite server installation
-├── 02_capsule_installer.yml          # Capsule server installation
+├── 02a_satellite_software_install.yml # Install Satellite/Capsule packages and prerequisites
+├── 02_satellite_installer.yml        # Run the Satellite installer
+├── 02_capsule_installer.yml          # Run the Capsule installer
 ├── 04_satellite_manifest.yml         # Manifest download and upload
 ├── 05_satellite_content_credentials.yml
 ├── 06_satellite_products_and_repositories.yml
@@ -100,15 +100,7 @@ The playbooks are numbered to indicate their intended execution order. Run
 them individually for targeted changes, or use `site.yml` for a full
 deployment from scratch.
 
-### Full Deployment
-
-```bash
-ansible-playbook site.yml
-```
-
-### Individual Playbooks
-
-Run a single step when only specific configuration has changed:
+Each playbook can be executed individually. Run the ones you need:
 
 ```bash
 ansible-playbook 14_satellite_settings.yml
@@ -117,8 +109,9 @@ ansible-playbook 14_satellite_settings.yml
 ### Execution Flow
 
 ```
-01  Register Satellite host with Red Hat (RHC)
-02  Install Satellite (certificates, firewall, packages, installer)
+01   Register Satellite host with Red Hat (RHC)
+02a  Install Satellite/Capsule software and prerequisites (fapolicyd, packages)
+02   Run the Satellite installer (certificates, firewall, installer)
         │
 04  Download and upload subscription manifest
 05  Create content credentials (GPG keys)
@@ -147,9 +140,12 @@ ansible-playbook 14_satellite_settings.yml
 ### Capsule Installation
 
 To install a Satellite Capsule, add the Capsule host to the inventory under
-a `[capsule]` group and provide appropriate `host_vars`:
+a `[capsule]` group and provide appropriate `host_vars`. The Capsule uses
+the same software installation step as the Satellite:
 
 ```bash
+ansible-playbook 01_register_satellite.yml --limit lab-capsule-1.crazy.lab
+ansible-playbook 02a_satellite_software_install.yml --limit lab-capsule-1.crazy.lab
 ansible-playbook 02_capsule_installer.yml --limit lab-capsule-1.crazy.lab
 ```
 
