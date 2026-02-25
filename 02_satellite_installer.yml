@@ -59,25 +59,7 @@
           loop_control:
             loop_var: '_t_service'
 
-    - name: 'Handle system preparation'
-      become: true
-      block:
-
-        - name: 'Update all packages'
-          ansible.builtin.dnf:
-            name: '*'
-            state: 'latest'
-            update_only: true  # to avoid installing additional packages
-          register: '_t_update'
-
-        - name: 'Install Satellite package'
-          ansible.builtin.dnf:
-            name: '{{ sat_package_name }}'
-            update_cache: true
-
-        - name: 'Reboot the server'
-          ansible.builtin.reboot:
-            reboot_timeout: 3600
-          when: >
-            _t_update.changed is defined
-            and _t_update.changed
+    - name: 'Verify {{ sat_package_name }} is installed'
+      ansible.builtin.dnf:
+        name: '{{ sat_package_name }}'
+        state: 'present'

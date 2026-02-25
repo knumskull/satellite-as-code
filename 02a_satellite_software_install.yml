@@ -1,0 +1,36 @@
+---
+- name: 'Install Satellite/Capsule software and prepare the system'
+  hosts: 'all'
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: 'Install fapolicyd'
+      ansible.builtin.dnf:
+        name: 'fapolicyd'
+        state: 'present'
+
+    - name: 'Enable and start fapolicyd'
+      ansible.builtin.service:
+        name: 'fapolicyd'
+        state: 'started'
+        enabled: true
+
+    - name: 'Update all packages'
+      ansible.builtin.dnf:
+        name: '*'
+        state: 'latest'
+        update_only: true
+      register: '_t_update'
+
+    - name: 'Install {{ sat_package_name }} package'
+      ansible.builtin.dnf:
+        name: '{{ sat_package_name }}'
+        update_cache: true
+
+    - name: 'Reboot the server'
+      ansible.builtin.reboot:
+        reboot_timeout: 3600
+      when: >
+        _t_update.changed is defined
+        and _t_update.changed
