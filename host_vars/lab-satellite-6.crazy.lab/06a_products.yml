@@ -69,6 +69,9 @@ sat_products:
       - name: 'Red Hat Satellite Client 6 for RHEL 8 x86_64 (RPMs)'
         download_policy: 'on_demand'
 
+      - name: 'Red Hat Satellite Maintenance 6.18 for RHEL 9 x86_64 (RPMs)'
+        download_policy: 'on_demand'
+
   - name: 'Red Hat Enterprise Linux High Availability for x86_64'
     repository_sets:
       - name: 'Red Hat Enterprise Linux 9 for x86_64 - High Availability (RPMs)'
