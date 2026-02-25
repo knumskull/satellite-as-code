@@ -36,20 +36,20 @@ ansible-galaxy collection install -r collections/requirements.yml
 ```
 .
 ├── 01_register_satellite.yml         # RHEL registration via RHC
-├── 02a_satellite_software_install.yml # Install Satellite/Capsule packages and prerequisites
-├── 02_satellite_installer.yml        # Run the Satellite installer
-├── 02_capsule_installer.yml          # Run the Capsule installer
-├── 04_satellite_manifest.yml         # Manifest download and upload
-├── 05_satellite_content_credentials.yml
-├── 06_satellite_products_and_repositories.yml
-├── 07_satellite_sync_repositories.yml
-├── 08_satellite_sync_plans.yml
-├── 09_satellite_lifecycle_environments.yml
-├── 10_satellite_domains.yml
-├── 11_satellite_subnets.yml
-├── 12_satellite_content_views.yml
-├── 13_satellite_content_view_publish.yml
-├── 14_satellite_settings.yml
+├── 02_satellite_software_install.yml # Install Satellite/Capsule packages and prerequisites
+├── 03_satellite_installer.yml        # Run the Satellite installer
+├── 04_capsule_installer.yml          # Run the Capsule installer
+├── 05_satellite_manifest.yml         # Manifest download and upload
+├── 06_satellite_content_credentials.yml
+├── 07_satellite_products_and_repositories.yml
+├── 08_satellite_sync_repositories.yml
+├── 09_satellite_sync_plans.yml
+├── 10_satellite_lifecycle_environments.yml
+├── 11_satellite_domains.yml
+├── 12_satellite_subnets.yml
+├── 13_satellite_content_views.yml
+├── 14_satellite_content_view_publish.yml
+├── 15_satellite_settings.yml
 ├── 16_satellite_operating_systems.yml
 ├── 17_satellite_activation_keys.yml
 ├── 18_satellite_host_groups.yml
@@ -96,37 +96,35 @@ ansible-galaxy collection install -r collections/requirements.yml
 
 ## Playbook Execution Order
 
-The playbooks are numbered to indicate their intended execution order. Run
-them individually for targeted changes, or use `site.yml` for a full
-deployment from scratch.
-
-Each playbook can be executed individually. Run the ones you need:
+The playbooks are numbered to indicate their intended execution order. Each
+playbook can be executed individually:
 
 ```bash
-ansible-playbook 14_satellite_settings.yml
+ansible-playbook 15_satellite_settings.yml
 ```
 
 ### Execution Flow
 
 ```
-01   Register Satellite host with Red Hat (RHC)
-02a  Install Satellite/Capsule software and prerequisites (fapolicyd, packages)
-02   Run the Satellite installer (certificates, firewall, installer)
+01  Register Satellite host with Red Hat (RHC)
+02  Install Satellite/Capsule software and prerequisites (fapolicyd, packages)
+03  Run the Satellite installer (certificates, firewall, installer)
+04  Run the Capsule installer (certificates, firewall, certs archive, installer)
         │
-04  Download and upload subscription manifest
-05  Create content credentials (GPG keys)
-06  Enable products and repositories
-07  Synchronize repositories (async)
-08  Create sync plans
+05  Download and upload subscription manifest
+06  Create content credentials (GPG keys)
+07  Enable products and repositories
+08  Synchronize repositories (async)
+09  Create sync plans
         │
-09  Create lifecycle environments
-10  Create domains
-11  Create subnets
+10  Create lifecycle environments
+11  Create domains
+12  Create subnets
         │
-12  Create content views (regular, composite, rolling)
-13  Publish and promote content views (async)
+13  Create content views (regular, composite, rolling)
+14  Publish and promote content views (async)
         │
-14  Apply Satellite settings
+15  Apply Satellite settings
 16  Configure operating systems
 17  Create activation keys
 18  Create host groups (hierarchical)
@@ -145,8 +143,8 @@ the same software installation step as the Satellite:
 
 ```bash
 ansible-playbook 01_register_satellite.yml --limit lab-capsule-1.crazy.lab
-ansible-playbook 02a_satellite_software_install.yml --limit lab-capsule-1.crazy.lab
-ansible-playbook 02_capsule_installer.yml --limit lab-capsule-1.crazy.lab
+ansible-playbook 02_satellite_software_install.yml --limit lab-capsule-1.crazy.lab
+ansible-playbook 04_capsule_installer.yml --limit lab-capsule-1.crazy.lab
 ```
 
 The Capsule installer expects the same firewall and certificate variables as
@@ -199,16 +197,16 @@ The playbooks consume only the merged variable (e.g. `satellite_products`,
 ### Adding a New Repository
 
 1. Add the product and repository set to `06a_products.yml`
-2. Run `06_satellite_products_and_repositories.yml` to enable it
-3. Run `07_satellite_sync_repositories.yml` to synchronize
+2. Run `07_satellite_products_and_repositories.yml` to enable it
+3. Run `08_satellite_sync_repositories.yml` to synchronize
 
 ### Adding a Content View
 
 1. Add the content view definition to `11b_content_views.yml` (or `11a` for
    custom products)
 2. If composite, add to `11c_composite_content_views.yml`
-3. Run `12_satellite_content_views.yml` to create it
-4. Run `13_satellite_content_view_publish.yml` to publish and promote
+3. Run `13_satellite_content_views.yml` to create it
+4. Run `14_satellite_content_view_publish.yml` to publish and promote
 
 ### Adding a New RHEL Version
 
@@ -226,12 +224,12 @@ This requires changes across multiple files:
    host groups
 7. **OpenSCAP** (`17`): Add compliance policies for the new version
 
-Then run the playbooks from step 06 onward, or use `site.yml`.
+Then run the playbooks from step 07 onward.
 
 ### Changing Satellite Settings
 
 1. Edit the appropriate `12x_settings_*.yml` file
-2. Run `14_satellite_settings.yml`
+2. Run `15_satellite_settings.yml`
 
 ### Updating Secrets
 
@@ -262,7 +260,7 @@ the `.pki/` directory for inclusion in `00a_secrets.yml`.
    ```
 4. Run the Capsule installer playbook:
    ```bash
-   ansible-playbook 02_capsule_installer.yml --limit <capsule-fqdn>
+   ansible-playbook 04_capsule_installer.yml --limit <capsule-fqdn>
    ```
 
 ## Host Group Hierarchy
@@ -293,7 +291,7 @@ This project is designed to run on AAP without modification:
    - **Vault credential**: Provide the vault password
    - **Machine credential**: SSH access to the Satellite host (`cloud-user`)
 3. **Job Templates**: Create one per playbook, or a Workflow Template that
-   chains them in order (mirroring `site.yml`)
+   chains them in the numbered order
 
 Secrets (RHSM credentials, SSH keys, certificates) are vault-encrypted in
 the repository and travel with the project -- no external secret store is
