@@ -74,3 +74,13 @@ sat_content_views:
         product: 'Red Hat Ansible Automation Platform'
       - name: 'Red Hat Ansible Automation Platform 2.6 for RHEL 9 x86_64 RPMs'
         product: 'Red Hat Ansible Automation Platform'
+
+
+  - name: 'cv-rhcdn-satellite_capsule-rhel-9'
+    lifecycle_environments: []
+    repositories:
+      - name: 'Red Hat Satellite Maintenance 6.18 for RHEL 9 x86_64 RPMs'
+        product: 'Red Hat Enterprise Linux for x86_64'
+
+      - name: 'Red Hat Satellite Capsule 6.18 for RHEL 9 x86_64 RPMs'
+        product: 'Red Hat Satellite Capsule'
