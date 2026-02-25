@@ -7,3 +7,10 @@ satellite_domains:
       - '{{ satellite_location }}'
     organizations:
       - '{{ satellite_organization }}'
+
+  - name: 'deploy.crazy.lab'
+    description: 'deploy.crazy.lab'
+    locations:
+      - '{{ satellite_location }}'
+    organizations:
+      - '{{ satellite_organization }}'
