@@ -85,3 +85,8 @@ sat_products:
 
       - name: 'Red Hat Ansible Automation Platform 2.6 for RHEL 9 x86_64 (RPMs)'
         download_policy: 'on_demand'
+  
+  - name: 'Red Hat Satellite Capsule'
+    repository_sets:
+      - name: 'Red Hat Satellite Capsule 6.18 for RHEL 9 x86_64 (RPMs)'
+        download_policy: 'on_demand'
