@@ -1,0 +1,102 @@
+---
+- name: 'Install Red Hat Satellite Capsule'
+  hosts: 'all'
+  gather_facts: true
+  become: true
+  roles:
+    - name: 'redhat.satellite_operations.installer'
+
+  pre_tasks:
+    - name: 'Validate required Capsule variables'
+      ansible.builtin.assert:
+        that:
+          - satellite_installer_scenario == 'capsule'
+          - satellite_installer_certs_tar_file is defined
+          - satellite_installer_certs_tar_file | length > 0
+        fail_msg: >
+          Capsule installation requires satellite_installer_scenario set to
+          'capsule' and satellite_installer_certs_tar_file pointing to the
+          certificate archive generated on the Satellite server.
+
+    - name: 'Handle certificate deployment'
+      become: true
+      when: >
+        sat_deploy_certificates is defined
+        and sat_deploy_certificates
+      block:
+
+        - name: 'Ensure certificate destination directory is present: {{ sat_cert_dest_path }}'
+          ansible.builtin.file:
+            path: '{{ sat_cert_dest_path }}'
+            state: 'directory'
+            owner: '{{ sat_cert_dest_path_owner }}'
+            group: '{{ sat_cert_dest_path_group }}'
+            mode: '{{ sat_cert_dest_path_mode }}'
+
+        - name: 'Deploy Certificates to the Capsule'
+          ansible.builtin.copy:
+            src: '{{ _t_cert }}'
+            dest: '{{ sat_cert_dest_path }}/{{ _t_cert | basename }}'
+            owner: '{{ sat_certs_owner }}'
+            group: '{{ sat_certs_group }}'
+            mode: '{{ sat_certs_mode }}'
+          loop: '{{ sat_certs }}'
+          loop_control:
+            loop_var: '_t_cert'
+
+    - name: 'Deploy Capsule certificate archive'
+      ansible.builtin.copy:
+        src: '{{ satellite_installer_certs_tar_file }}'
+        dest: '/root/{{ satellite_installer_certs_tar_file | basename }}'
+        owner: 'root'
+        group: 'root'
+        mode: '0600'
+
+    - name: 'Handle firewalld configuration'
+      become: true
+      block:
+
+        - name: 'Configure firewalld ports'
+          ansible.posix.firewalld:
+            zone: "{{ _t_port.zone | default('public') }}"
+            port: '{{ _t_port.port }}'
+            state: 'enabled'
+            permanent: true
+            immediate: true
+          loop: '{{ sat_firewall_ports }}'
+          loop_control:
+            loop_var: '_t_port'
+
+        - name: 'Configure firewalld services'
+          ansible.posix.firewalld:
+            zone: "{{ _t_service.zone | default('public') }}"
+            service: '{{ _t_service.name }}'
+            state: 'enabled'
+            permanent: true
+            immediate: true
+          loop: '{{ sat_firewall_services }}'
+          loop_control:
+            loop_var: '_t_service'
+
+    - name: 'Handle system preparation'
+      become: true
+      block:
+
+        - name: 'Update all packages'
+          ansible.builtin.dnf:
+            name: '*'
+            state: 'latest'
+            update_only: true
+          register: '_t_update'
+
+        - name: 'Install Capsule package'
+          ansible.builtin.dnf:
+            name: '{{ sat_package_name }}'
+            update_cache: true
+
+        - name: 'Reboot the server'
+          ansible.builtin.reboot:
+            reboot_timeout: 3600
+          when: >
+            _t_update.changed is defined
+            and _t_update.changed
