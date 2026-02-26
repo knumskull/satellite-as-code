@@ -113,20 +113,6 @@ sat_lifecycle_environment_host_groups:
     organization: 'CRAZY.LAB'
     kickstart_repository: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS Kickstart 9.6'
 
-  - name: 'hg-customer-rhel-9-prod'
-    parent: 'hg-base/hg-rhel-9/hg-default-rhel-9'
-    lifecycle_environment: 'lce-default-prod'
-    content_view: 'ccv-default-rhel-9'
-    locations:
-      - 'loc-local'
-    domain: 'customer.prod'
-    subnet: 'sn-172_16_30_0'
-    activation_keys: 'ak-default-rhel-9-prod'
-    openscap_proxy: '{{ inventory_hostname }}'
-    content_source: '{{ inventory_hostname }}'
-    organization: 'CRAZY.LAB'
-    kickstart_repository: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS Kickstart 9.6'
-
   - name: 'hg-default-rhel-10-dev'
     parent: 'hg-base/hg-rhel-10/hg-default-rhel-10'
     lifecycle_environment: 'lce-default-dev'
