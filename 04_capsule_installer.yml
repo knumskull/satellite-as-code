@@ -7,16 +7,13 @@
     - name: 'redhat.satellite_operations.installer'
 
   pre_tasks:
-    - name: 'Validate required Capsule variables'
+    - name: 'Validate Capsule installer scenario'
       ansible.builtin.assert:
         that:
           - satellite_installer_scenario == 'capsule'
-          - satellite_installer_certs_tar_file is defined
-          - satellite_installer_certs_tar_file | length > 0
         fail_msg: >
           Capsule installation requires satellite_installer_scenario set to
-          'capsule' and satellite_installer_certs_tar_file pointing to the
-          certificate archive generated on the Satellite server.
+          'capsule'.
 
     - name: 'Handle certificate deployment'
       become: true
@@ -44,6 +41,51 @@
           loop_control:
             loop_var: '_t_cert'
 
+    - name: 'Generate Capsule certificate archive on Satellite'
+      when: >
+        capsule_satellite_server is defined
+        and capsule_satellite_server | length > 0
+      block:
+
+        - name: 'Remove existing certificate archive on Satellite (regenerate)'
+          ansible.builtin.file:
+            path: '{{ capsule_certs_tar_remote_path }}'
+            state: 'absent'
+          delegate_to: '{{ capsule_satellite_server }}'
+          when: >
+            capsule_certs_regenerate is defined
+            and capsule_certs_regenerate
+
+        - name: 'Run capsule-certs-generate on {{ capsule_satellite_server }}'
+          ansible.builtin.command:
+            cmd: >-
+              capsule-certs-generate
+              --foreman-proxy-fqdn {{ inventory_hostname }}
+              --certs-tar {{ capsule_certs_tar_remote_path }}
+            creates: '{{ capsule_certs_tar_remote_path }}'
+          delegate_to: '{{ capsule_satellite_server }}'
+
+        - name: 'Fetch certificate archive from {{ capsule_satellite_server }}'
+          ansible.builtin.fetch:
+            src: '{{ capsule_certs_tar_remote_path }}'
+            dest: '/tmp/{{ inventory_hostname }}-certs.tar'
+            flat: true
+          delegate_to: '{{ capsule_satellite_server }}'
+
+        - name: 'Set certificate archive path'
+          ansible.builtin.set_fact:
+            satellite_installer_certs_tar_file: '/tmp/{{ inventory_hostname }}-certs.tar'
+
+    - name: 'Validate certificate archive is available'
+      ansible.builtin.assert:
+        that:
+          - satellite_installer_certs_tar_file is defined
+          - satellite_installer_certs_tar_file | length > 0
+        fail_msg: >
+          No certificate archive available. Either define capsule_satellite_server
+          to auto-generate it, or set satellite_installer_certs_tar_file to the
+          path of a pre-generated certificate archive.
+
     - name: 'Deploy Capsule certificate archive'
       ansible.builtin.copy:
         src: '{{ satellite_installer_certs_tar_file }}'
@@ -51,6 +93,12 @@
         owner: 'root'
         group: 'root'
         mode: '0600'
+
+    - name: 'Update certs-tar-file in installer options'
+      ansible.builtin.set_fact:
+        satellite_installer_options: >-
+          {{ satellite_installer_options +
+             ['--certs-tar-file /root/' + (satellite_installer_certs_tar_file | basename)] }}
 
     - name: 'Handle firewalld configuration'
       become: true

@@ -3,3 +3,9 @@ lab-satellite-6.crazy.lab ansible_user=cloud-user
 
 [satellite:children]
 satellite-dev
+
+[capsule-dev]
+lab-capsule-6.deploy.crazy.lab ansible_user=cloud-user
+
+[capsule:children]
+capsule-dev

@@ -1,0 +1,9 @@
+---
+# Whether to install and enable fapolicyd
+sat_fapolicyd_enabled: true
+
+# Custom fapolicyd rules to deploy to /etc/fapolicyd/rules.d/
+sat_fapolicyd_rules:
+  - name: '05-ansible'
+    rules:
+      - 'allow perm=any all : dir=/home/{{ ansible_user }}/.ansible/tmp/ ftype=text/x-python trust=0'

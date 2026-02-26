@@ -1,0 +1,47 @@
+---
+# Capsule package name
+sat_package_name: 'satellite-capsule'
+
+# Installer scenario -- must be 'capsule'
+satellite_installer_scenario: 'capsule'
+
+# Installer verbosity
+satellite_installer_verbose: true
+
+# Disable colors in installer output
+satellite_installer_no_colors: true
+
+# Installer locale
+satellite_installer_locale: 'en_US.UTF-8'
+
+# Installer binary (satellite-installer handles both scenarios)
+satellite_installer_package: 'satellite-installer'
+
+# Installer timeout in seconds
+satellite_installer_timeout: '3600'
+
+# --------------------------------------------------------------------------
+# Installer options
+# --------------------------------------------------------------------------
+# The certs-tar-file option is set automatically by the playbook after
+# the certificate archive is deployed to /root/.
+satellite_installer_options:
+  - '--puppet-runmode none'
+  - '--foreman-proxy-register-in-foreman true'
+  - '--foreman-proxy-foreman-base-url https://lab-satellite-6.crazy.lab'
+  - '--foreman-proxy-trusted-hosts lab-satellite-6.crazy.lab'
+  - '--foreman-proxy-trusted-hosts {{ inventory_hostname }}'
+  - '--foreman-proxy-oauth-consumer-key {{ capsule_oauth_consumer_key }}'
+  - '--foreman-proxy-oauth-consumer-secret {{ capsule_oauth_consumer_secret }}'
+  - '--certs-server-cert {{ sat_cert_dest_path }}/{{ sat_certs_pub_key | basename }}'
+  - '--certs-server-key {{ sat_cert_dest_path }}/{{ sat_certs_priv_key | basename }}'
+  - '--certs-server-ca-cert {{ sat_cert_dest_path }}/{{ sat_certs_ca_bundle | basename }}'
+  - '--foreman-proxy-content-parent-fqdn lab-satellite-6.crazy.lab'
+  - '--foreman-proxy-dhcp false'
+  - '--foreman-proxy-dns false'
+  - '--foreman-proxy-tftp true'
+  - '--foreman-proxy-tftp-servername {{ inventory_hostname }}'
+  - '--foreman-proxy-httpboot true'
+  - '--foreman-proxy-http true'
+  - '--foreman-proxy-templates true'
+  - '--enable-foreman-proxy-plugin-remote-execution-script'

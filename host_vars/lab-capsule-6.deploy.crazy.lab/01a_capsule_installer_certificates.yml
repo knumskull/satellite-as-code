@@ -1,0 +1,49 @@
+---
+# Whether to deploy custom SSL certificates to the Capsule
+sat_deploy_certificates: true
+
+# Path to the private key
+sat_certs_priv_key: '.pki/crazy.lab-key.pem'
+
+# Path to the public certificate (wildcard)
+sat_certs_pub_key: '.pki/crazy.lab-wildcard.pem'
+
+# Path to the CA bundle
+sat_certs_ca_bundle: '.pki/crazy.lab-chain.pem'
+
+# List of certificate files to deploy
+sat_certs:
+  - '{{ sat_certs_priv_key }}'
+  - '{{ sat_certs_pub_key }}'
+  - '{{ sat_certs_ca_bundle }}'
+
+# Destination directory on the Capsule
+sat_cert_dest_path: '/root/certs'
+sat_cert_dest_path_owner: 'root'
+sat_cert_dest_path_group: 'root'
+sat_cert_dest_path_mode: '0700'
+
+# Certificate file permissions
+sat_certs_owner: 'root'
+sat_certs_group: 'root'
+sat_certs_mode: '0600'
+
+# --------------------------------------------------------------------------
+# Capsule certificate archive
+# --------------------------------------------------------------------------
+# The Satellite server to delegate capsule-certs-generate to.
+# When defined, the playbook will automatically:
+#   1. SSH to this host and run capsule-certs-generate
+#   2. Fetch the generated tar to the Ansible controller
+#   3. Deploy it to the Capsule
+capsule_satellite_server: 'lab-satellite-6.crazy.lab'
+
+# Path on the Satellite where the tar will be generated
+capsule_certs_tar_remote_path: '/root/{{ inventory_hostname }}-certs.tar'
+
+# Set to true to force regeneration even if the tar already exists
+capsule_certs_regenerate: false
+
+# Path to the certificate tar (set automatically when capsule_satellite_server
+# is defined; only set this manually if you provide your own pre-generated tar)
+# satellite_installer_certs_tar_file: '/path/to/certs.tar'
