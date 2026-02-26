@@ -1,4 +1,5 @@
 .vault.pass
+.envrc
 .pki/
 .vscode/
 .ansible/
