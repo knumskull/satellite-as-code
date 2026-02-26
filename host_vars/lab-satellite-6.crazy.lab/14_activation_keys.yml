@@ -161,3 +161,16 @@ satellite_activation_keys:
 
       - label: 'CRAZY_LAB_prd-epel-epel_repo-epel-epel-10-rhel-10'
         override: 'enabled'
+
+  - name: 'ak-satellite_capsule-rhel-9'
+    description: 'Satellite Capsule hosts'
+    lifecycle_environment: 'lce-default-dev'
+    content_view: 'ccv-satellite_capsule-rhel-9'
+    release_version: 9
+    unlimited_hosts: true
+    service_level: 'Self-Support'
+    purpose_usage: 'Production'
+    purpose_role: 'Red Hat Enterprise Linux Server'
+    content_overrides:
+      - label: 'satellite-client-6-for-rhel-9-x86_64-rpms'
+        override: 'enabled'

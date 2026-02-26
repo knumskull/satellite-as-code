@@ -1,6 +1,6 @@
 ---
 # Firewalld rules for Satellite Capsule
-# https://docs.redhat.com/en/documentation/red_hat_satellite/6.17/html/installing_capsule_server/preparing-environment-for-capsule-installation
+# https://docs.redhat.com/en/documentation/red_hat_satellite/6.18/html/installing_capsule_server/preparing-environment-for-capsule-installation
 sat_firewall_ports:
   - port: '8000/tcp'
     zone: 'public'

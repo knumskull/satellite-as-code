@@ -14,10 +14,10 @@ rhc_repositories:
   - name: 'rhel-9-for-x86_64-appstream-rpms'
     state: 'enabled'
 
-  - name: 'satellite-6.17-for-rhel-9-x86_64-rpms'
+  - name: 'satellite-6.18-for-rhel-9-x86_64-rpms'
     state: 'enabled'
 
-  - name: 'satellite-maintenance-6.17-for-rhel-9-x86_64-rpms'
+  - name: 'satellite-maintenance-6.18-for-rhel-9-x86_64-rpms'
     state: 'enabled'
 
 # RHEL release to set in subscription-manager
