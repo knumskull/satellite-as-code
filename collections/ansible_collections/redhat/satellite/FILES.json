@@ -102,14 +102,14 @@
    "name": "roles/activation_keys/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e356fc6f30c6b04b2ad15f2221ce2e91fdf2be4e32d92d38316ca8907ddcefde",
+   "chksum_sha256": "7266bb2d6a7cd60a4232fbbb251efee3de01cc90a683aa957ebe994a6cd5b828",
    "format": 1
   },
   {
    "name": "roles/activation_keys/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e81e0c30d493d394769265a841659338e5a8037bce9973acacfee87e10f87515",
+   "chksum_sha256": "484f996d6c0e157c7e78b1317eb34c50603e3c495f79313dda5b1631a15b3002",
    "format": 1
   },
   {
@@ -452,7 +452,7 @@
    "name": "roles/convert2rhel/tasks/activation_keys.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "09f95edf2ac85dcf32350acd33fca2c7e62f7d5a278038f17c11714364a51dfb",
+   "chksum_sha256": "48b3d3177b1ba6b1c4a28725141159c3704bf3c9465f5f9439981c4e6f0b2e5c",
    "format": 1
   },
   {
@@ -494,7 +494,7 @@
    "name": "roles/content_credentials/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d0e72031a6b55bee9f36448fb22923d206bdb5e520cd7b67e57c2c281a0a238e",
+   "chksum_sha256": "8100e7dca492e0cfbe8b6438061a6e6882320f31af3b49c224cb6c946bcbbc10",
    "format": 1
   },
   {
@@ -1299,7 +1299,7 @@
    "name": "plugins/modules/job_invocation.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "fd1fa5dda1d5a8e97bf128501bc46de8492a1e330df3fda3b4e525a3a06a84e8",
+   "chksum_sha256": "19ac29f72089d2c6d69909f0997315b45df46625ef0e2a152fba03f6c5c72507",
    "format": 1
   },
   {
@@ -1404,7 +1404,7 @@
    "name": "plugins/modules/registration_command.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e33cdc22669b40167b29398869ee7e5c7932ff18f659240a6623766569f4affb",
+   "chksum_sha256": "c3ca2e06fb967440c6a5dcd4bc9262cfe855ff91f289ae4e5ad090c45734cf71",
    "format": 1
   },
   {
@@ -1691,7 +1691,7 @@
    "name": "plugins/modules/activation_key.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "703827a6fc3005c8c08536803abfd240e1748dba37419273713a064376b818cf",
+   "chksum_sha256": "34a83a895d2e7b0a249be01491c4f4399cb1ad7af0eb4084583971efce43b64e",
    "format": 1
   },
   {
@@ -1712,7 +1712,7 @@
    "name": "plugins/modules/content_upload.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d2eca23615ca225befbacbf1d15cc2a6a8b6ba0d7236727c30e67dbee68d4b32",
+   "chksum_sha256": "352b4ada2b8aefa9e63e07e3690e0251c0e92fca2d1eda1f65bcb6a674813549",
    "format": 1
   },
   {
@@ -1831,7 +1831,7 @@
    "name": "changelogs/changelog.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "96b5194b35f5a16b7f07f7f62eb762ad2e9cca34a024c0423de5d12963e08246",
+   "chksum_sha256": "51464e4ae0323f17ac2eb91354381c89c42852b3041de6314e495be228991400",
    "format": 1
   },
   {
@@ -2034,7 +2034,7 @@
    "name": "tests/test_playbooks/activation_keys_role.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "18d7e80e50f6598caf181e1533efc2ce44e029d625deee1930b58e5d305473fe",
+   "chksum_sha256": "719b5fac5fc2c400a4c021bdbd29a9a8f134218396cc9c734d8a2dba91e85ee4",
    "format": 1
   },
   {
@@ -2174,7 +2174,7 @@
    "name": "tests/test_playbooks/content_view_info.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "124483b823b5100b8f2d0f58414b543f0f0d08601a8790a6e293fcfb746df334",
+   "chksum_sha256": "1e4a66e14d08565a1a1e4c60b7cea074fb1d239cd693b889546fe97341849f05",
    "format": 1
   },
   {
@@ -2727,7 +2727,7 @@
    "name": "tests/test_playbooks/tasks/activation_key.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8e11bc14049931e3918017c710a5fd6aa19f7e02f207efa7c215e88d2d59164a",
+   "chksum_sha256": "849b1ff9a7be2f0f532ece242a16fc257316d7d24e028424d28df6316a7edf69",
    "format": 1
   },
   {
@@ -3350,7 +3350,7 @@
    "name": "tests/test_playbooks/activation_key.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "eb76adb81e925eca759ca7762d4ea3e3d5c33d43adde005ee8e90152c26c7d75",
+   "chksum_sha256": "461ec8fae707f06e8aba474664e6f6db0231b4faa4741ceaf714114baac495af",
    "format": 1
   },
   {
@@ -3623,7 +3623,7 @@
    "name": "tests/test_playbooks/job_invocation.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "fe0dc6e6a61a87fe026e362750f18fe2cc4bdb7a418ff0dff97f0cc687b159a0",
+   "chksum_sha256": "b9048843f9869f543c8d104e7044028574a6945971275421d419f271c4038449",
    "format": 1
   },
   {
@@ -3756,7 +3756,7 @@
    "name": "tests/conftest.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6b306297ce172af04b4c9216789297a470dacd70f92be640a6793426bfa86c18",
+   "chksum_sha256": "2649b3ab096679b4ca475744692b56b4d687ae7b726def4504abdbfeca0aea09",
    "format": 1
   },
   {
@@ -3770,7 +3770,7 @@
    "name": "CHANGELOG.rst",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "896b074c5703101cd1ccafd43003eacbdb6c81088ccad981bfddee739d6f207d",
+   "chksum_sha256": "8f1eaa402df7031cb24fa31bdce651fd5f8706fe47be4f420ead858505afb342",
    "format": 1
   },
   {

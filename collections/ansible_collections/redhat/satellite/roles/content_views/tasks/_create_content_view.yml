@@ -8,7 +8,7 @@
     organization: "{{ content_view.organization | default(satellite_organization) }}"
     name: "{{ content_view.name }}"
     auto_publish: "{{ content_view.auto_publish | default(omit) }}"
-    rolling: "{{ content_view.rolling | default(omit) }}"
+    rolling: "{{ content_view.rolling | default(false) }}"
     components: "{{ content_view.components | default(omit) }}"
     composite: "{{ content_view.components | default(content_view.composite) | default(false) | ternary(true, false) }}"
     description: "{{ content_view.description | default(omit) }}"
