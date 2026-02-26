@@ -1,10 +1,17 @@
 ---
 # Variables used by the role redhat.rhel_system_roles.rhc
+# The Capsule registers against the Satellite server (not RHSM/CDN).
 rhc_state: 'present'
 rhc_auth:
   activation_keys:
     keys: ['{{ satellite_rhsm_activationkey }}']
   rhc_organization: '{{ satellite_rhsm_organization_id }}'
+
+# Register against the Satellite server
+rhc_server:
+  hostname: 'lab-satellite-6.crazy.lab'
+  port: 443
+  prefix: '/rhsm'
 
 # Repositories to enable on the Capsule host
 rhc_repositories:

@@ -38,8 +38,7 @@ ansible-vault encrypt_string 'value' --name 'variable_name'
 
 At minimum you need:
 
-- `satellite_rhsm_username` / `satellite_rhsm_password` -- RHSM credentials
-- `satellite_rhsm_organization_id` / `satellite_rhsm_activationkey` -- RHSM org and activation key
+- `satellite_rhsm_organization_id` / `satellite_rhsm_activationkey` -- Satellite org and activation key (the Capsule registers against the Satellite, not RHSM/CDN)
 - `sat_initial_user` / `sat_initial_password` -- Satellite admin credentials
 - `capsule_oauth_consumer_key` / `capsule_oauth_consumer_secret` -- from the Satellite:
 
