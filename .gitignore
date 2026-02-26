@@ -3,5 +3,4 @@
 .pki/
 .vscode/
 .ansible/
-ansible copy.cfg
 collections/ansible_collections/
