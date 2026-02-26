@@ -1,4 +1,4 @@
-# Satellite as Code - CRAZY.LAB
+# Satellite as Code
 
 Ansible project that fully automates the deployment and configuration of a
 Red Hat Satellite 6 infrastructure, from initial RHEL registration through
@@ -8,27 +8,216 @@ Every aspect of the Satellite configuration is expressed as code: playbooks
 handle orchestration, while all environment-specific values live in
 `host_vars` files, enabling clean separation between logic and data.
 
-## Prerequisites
+## Getting Started
 
-- **Control node**: Ansible 2.15+ (or AAP 2.x)
-- **Target host**: RHEL 9 with network access to Red Hat CDN
-- **Subscriptions**: Valid Red Hat Satellite subscription and manifest
-- **Vault password**: Stored in `.vault.pass` (git-ignored) or provided via
-  `--vault-password-file` / AAP credential
+### 1. Install Ansible on the Control Node
 
-### Required Collections
-
-| Collection | Purpose |
-|---|---|
-| `redhat.satellite` | Satellite resource management |
-| `redhat.satellite_operations` | Satellite/Capsule installer |
-| `redhat.rhel_system_roles` | RHEL registration (RHC) |
-| `ansible.posix` | Firewalld configuration |
-
-Install with:
+The control node is the machine you run the playbooks from (your laptop, a
+jump host, or an AAP controller). Install Ansible on RHEL 9 or 10:
 
 ```bash
-ansible-galaxy collection install -r collections/requirements.yml
+sudo dnf install -y ansible-core python3-pip
+```
+
+Verify the installation:
+
+```bash
+ansible --version
+```
+
+### 2. Clone the Repository
+
+```bash
+git clone <repository-url> satellite-as-code
+cd satellite-as-code
+```
+
+### 3. Configure the Automation Hub Token
+
+Several collections (`redhat.satellite`, `redhat.satellite_operations`,
+`redhat.rhel_system_roles`) are hosted on Red Hat Automation Hub and require
+an authentication token.
+
+1. Go to
+   [console.redhat.com/ansible/automation-hub/token](https://console.redhat.com/ansible/automation-hub/token)
+2. Click **Load token** and copy it
+3. Export it as an environment variable (add to `~/.bashrc` or `~/.zshrc`):
+
+```bash
+export ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_TOKEN='your-token-here'
+```
+
+The `ansible.cfg` in this project is pre-configured with the Automation Hub
+URL and auth endpoint. The token is intentionally **not** stored in
+`ansible.cfg` to avoid committing sensitive data to Git.
+
+### 4. Install Required Collections
+
+The project depends on several Ansible collections defined in
+`collections/requirements.yml`. Install them into the project-local
+`collections/` directory (matching `collections_path` in `ansible.cfg`):
+
+```bash
+ansible-galaxy collection install -r collections/requirements.yml \
+  -p ./collections
+```
+
+If the installation fails due to version resolution, add `--pre` to allow
+pre-release versions:
+
+```bash
+ansible-galaxy collection install -r collections/requirements.yml \
+  -p ./collections --pre
+```
+
+### 5. Set Up the Vault Password
+
+All secrets (RHSM credentials, SSH keys, API tokens) are vault-encrypted in
+the repository. Ansible needs the vault password to decrypt them.
+
+Create a vault password file **outside the project directory**. Storing it
+inside the project would cause problems with AAP (which manages vault
+credentials separately) and risks accidental commits:
+
+```bash
+echo 'your-vault-password' > ~/.vault-pass-satellite
+chmod 600 ~/.vault-pass-satellite
+```
+
+Then tell Ansible where to find it. The recommended approach is to set the
+environment variable in your shell profile (`~/.bashrc` or `~/.zshrc`):
+
+```bash
+export ANSIBLE_VAULT_PASSWORD_FILE=~/.vault-pass-satellite
+```
+
+Alternatively, pass it on every run:
+
+```bash
+ansible-playbook 03_satellite_installer.yml \
+  --vault-password-file ~/.vault-pass-satellite
+```
+
+Do **not** configure `vault_password_file` in `ansible.cfg` if you plan to
+run this project on AAP. AAP still reads `ansible.cfg` and will attempt to
+use the configured path, which will not exist inside the execution
+environment and cause the job to fail.
+
+### 6. Configure Credentials
+
+All sensitive values live in `host_vars/<satellite-fqdn>/00a_secrets.yml`.
+To create or update vault-encrypted values, use `ansible-vault
+encrypt_string`:
+
+**Encrypt a simple string:**
+
+```bash
+ansible-vault encrypt_string 'my-secret-password' --name 'variable_name'
+```
+
+**Encrypt the contents of a file (e.g. an SSH key or certificate):**
+
+```bash
+ansible-vault encrypt_string "$(cat ~/.ssh/id_ed25519.pub)" \
+  --name 'sat_remote_execution_ssh_public_key'
+```
+
+**Encrypt a private key file:**
+
+```bash
+ansible-vault encrypt_string "$(cat /path/to/private-key.pem)" \
+  --name 'sat_cert_private_key_content'
+```
+
+Paste the output into `00a_secrets.yml`. The file already contains all the
+variables used by the playbooks -- replace the existing vault blocks with
+your own.
+
+To edit the secrets file interactively:
+
+```bash
+ansible-vault edit host_vars/<satellite-fqdn>/00a_secrets.yml
+```
+
+The `vault-pki.sh` helper script automates vault-encrypting all certificate
+files from a directory:
+
+```bash
+./vault-pki.sh .pki/
+```
+
+### 7. Prepare the Satellite Target Host
+
+The playbooks connect to the Satellite server via SSH. The target host must
+be configured to allow access for the Ansible user **before** running any
+playbooks.
+
+**On the target RHEL host** (as root or via console access):
+
+1. Create the Ansible user (matching `ansible_user` in the inventory):
+
+```bash
+useradd -m cloud-user
+```
+
+2. Grant passwordless sudo:
+
+```bash
+echo 'cloud-user ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/cloud-user
+chmod 440 /etc/sudoers.d/cloud-user
+```
+
+3. Deploy your SSH public key:
+
+```bash
+mkdir -p /home/cloud-user/.ssh
+chmod 700 /home/cloud-user/.ssh
+cat >> /home/cloud-user/.ssh/authorized_keys << 'EOF'
+ssh-ed25519 AAAA... your-key-comment
+EOF
+chmod 600 /home/cloud-user/.ssh/authorized_keys
+chown -R cloud-user:cloud-user /home/cloud-user/.ssh
+```
+
+4. Verify SSH access from the control node:
+
+```bash
+ssh cloud-user@<satellite-fqdn> sudo whoami
+# should print: root
+```
+
+### 8. Update the Inventory
+
+Edit `inventory` to match your environment:
+
+```ini
+[satellite-dev]
+satellite.example.com ansible_user=cloud-user
+
+[satellite:children]
+satellite-dev
+```
+
+### 9. Customize Host Variables
+
+Create or update the `host_vars/<satellite-fqdn>/` directory. At minimum,
+review and adjust:
+
+- `00a_secrets.yml` -- RHSM credentials, manifest UUID, SSH keys
+- `00b_register_satellite.yml` -- activation key, repositories, RHEL version
+- `01a_satellite_installer_certificates.yml` -- certificate paths
+- `01c_satellite_installer_configuration.yml` -- installer options
+
+### 10. Run the Playbooks
+
+Execute playbooks in numbered order for a full deployment, or run individual
+steps as needed:
+
+```bash
+ansible-playbook 01_register_satellite.yml
+ansible-playbook 02_satellite_software_install.yml
+ansible-playbook 03_satellite_installer.yml
+# ... continue with 05-22
 ```
 
 ## Project Structure
@@ -59,8 +248,11 @@ ansible-galaxy collection install -r collections/requirements.yml
 ├── 22_satellite_users.yml
 ├── inventory                         # Static inventory
 ├── ansible.cfg
+├── collections/
+│   ├── requirements.yml              # Collection dependencies
+│   └── ansible_collections/          # Installed collections
 ├── host_vars/
-│   └── lab-satellite-6.crazy.lab/    # All host-specific configuration
+│   └── <satellite-fqdn>/            # All host-specific configuration
 │       ├── 00a_secrets.yml           # Vault-encrypted credentials
 │       ├── 00b_register_satellite.yml
 │       ├── 00c_satellite_software_install.yml  # fapolicyd toggle and rules
@@ -143,9 +335,9 @@ a `[capsule]` group and provide appropriate `host_vars`. The Capsule uses
 the same software installation step as the Satellite:
 
 ```bash
-ansible-playbook 01_register_satellite.yml --limit lab-capsule-1.crazy.lab
-ansible-playbook 02_satellite_software_install.yml --limit lab-capsule-1.crazy.lab
-ansible-playbook 04_capsule_installer.yml --limit lab-capsule-1.crazy.lab
+ansible-playbook 01_register_satellite.yml --limit lab-capsule-1.example.com
+ansible-playbook 02_satellite_software_install.yml --limit lab-capsule-1.example.com
+ansible-playbook 04_capsule_installer.yml --limit lab-capsule-1.example.com
 ```
 
 The Capsule installer expects the same firewall and certificate variables as
@@ -162,7 +354,7 @@ numbered naming convention that mirrors the playbook they feed into.
 
 | Prefix | Area | Example |
 |--------|------|---------|
-| `00` | Secrets and registration | `00a_secrets.yml` |
+| `00` | Secrets, registration, software install | `00a_secrets.yml` |
 | `01` | Installer (certs, firewall, options) | `01c_satellite_installer_configuration.yml` |
 | `02` | General / shared variables | `02_general.yml` |
 | `03-04` | Cloud connector, manifest | `04_manifest.yml` |
@@ -234,20 +426,8 @@ Then run the playbooks from step 07 onward.
 
 ### Updating Secrets
 
-All sensitive values are vault-encrypted in `00a_secrets.yml`. To edit:
-
-```bash
-ansible-vault edit host_vars/lab-satellite-6.crazy.lab/00a_secrets.yml
-```
-
-Or encrypt a new value:
-
-```bash
-ansible-vault encrypt_string 'my-secret-value' --name 'variable_name'
-```
-
-The `vault-pki.sh` helper script can vault-encrypt certificate files from
-the `.pki/` directory for inclusion in `00a_secrets.yml`.
+All sensitive values are vault-encrypted in `00a_secrets.yml`. See the
+Getting Started section for details on creating vault-encrypted values.
 
 ### Adding a Capsule
 
@@ -255,14 +435,17 @@ the `.pki/` directory for inclusion in `00a_secrets.yml`.
 2. Create `host_vars/<capsule-fqdn>/` with the required variable files
    (certificates, firewall rules, installer configuration)
 3. On the Satellite server, generate the Capsule certificate archive:
-   ```bash
-   capsule-certs-generate --foreman-proxy-fqdn <capsule-fqdn> \
-     --certs-tar /root/<capsule-fqdn>-certs.tar
-   ```
+
+```bash
+capsule-certs-generate --foreman-proxy-fqdn <capsule-fqdn> \
+  --certs-tar /root/<capsule-fqdn>-certs.tar
+```
+
 4. Run the Capsule installer playbook:
-   ```bash
-   ansible-playbook 04_capsule_installer.yml --limit <capsule-fqdn>
-   ```
+
+```bash
+ansible-playbook 04_capsule_installer.yml --limit <capsule-fqdn>
+```
 
 ## Host Group Hierarchy
 
@@ -290,13 +473,18 @@ This project is designed to run on AAP without modification:
 1. **Project**: Point to this Git repository
 2. **Credentials**:
    - **Vault credential**: Provide the vault password
-   - **Machine credential**: SSH access to the Satellite host (`cloud-user`)
+   - **Machine credential**: SSH access to the Satellite host
 3. **Job Templates**: Create one per playbook, or a Workflow Template that
    chains them in the numbered order
 
 Secrets (RHSM credentials, SSH keys, certificates) are vault-encrypted in
 the repository and travel with the project -- no external secret store is
 required.
+
+Do not set `vault_password_file` in `ansible.cfg`. AAP manages vault
+credentials through its own credential system, but still reads
+`ansible.cfg` -- a configured path that does not exist inside the execution
+environment will cause the job to fail.
 
 ## License
 
