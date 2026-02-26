@@ -63,6 +63,7 @@ ansible-galaxy collection install -r collections/requirements.yml
 │   └── lab-satellite-6.crazy.lab/    # All host-specific configuration
 │       ├── 00a_secrets.yml           # Vault-encrypted credentials
 │       ├── 00b_register_satellite.yml
+│       ├── 00c_satellite_software_install.yml  # fapolicyd toggle and rules
 │       ├── 01a_satellite_installer_certificates.yml
 │       ├── 01b_satellite_firewall_rules.yml
 │       ├── 01c_satellite_installer_configuration.yml

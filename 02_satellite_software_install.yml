@@ -5,16 +5,34 @@
   become: true
 
   tasks:
-    - name: 'Install fapolicyd'
-      ansible.builtin.dnf:
-        name: 'fapolicyd'
-        state: 'present'
+    - name: 'Handle fapolicyd setup'
+      when: >
+        sat_fapolicyd_enabled is defined
+        and sat_fapolicyd_enabled
+      block:
 
-    - name: 'Enable and start fapolicyd'
-      ansible.builtin.service:
-        name: 'fapolicyd'
-        state: 'started'
-        enabled: true
+        - name: 'Install and configure fapolicyd via system role'
+          ansible.builtin.include_role:
+            name: 'redhat.rhel_system_roles.fapolicyd'
+
+        - name: 'Deploy custom fapolicyd rules'
+          ansible.builtin.copy:
+            content: |
+              {% for rule in _t_rule.rules %}
+              {{ rule }}
+              {% endfor %}
+            dest: '/etc/fapolicyd/rules.d/{{ _t_rule.name }}.rules'
+            owner: 'root'
+            group: 'fapolicyd'
+            mode: '0644'
+          loop: '{{ sat_fapolicyd_rules }}'
+          loop_control:
+            loop_var: '_t_rule'
+            label: '{{ _t_rule.name }}'
+          when: >
+            sat_fapolicyd_rules is defined
+            and sat_fapolicyd_rules | length > 0
+          notify: '_restart_fapolicyd'
 
     - name: 'Update all packages'
       ansible.builtin.dnf:
@@ -34,3 +52,10 @@
       when: >
         _t_update.changed is defined
         and _t_update.changed
+
+  handlers:
+    - name: 'Restart fapolicyd'
+      listen: '_restart_fapolicyd'
+      ansible.builtin.service:
+        name: 'fapolicyd'
+        state: 'restarted'
