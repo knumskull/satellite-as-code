@@ -1,6 +1,0 @@
-# SPDX-License-Identifier: GPL-3.0-only
----
-__postfix_smtp_services:
-  - smtp
-  - smtps
-  - submission

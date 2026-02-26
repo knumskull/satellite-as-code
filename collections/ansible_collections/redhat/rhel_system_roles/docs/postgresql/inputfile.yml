@@ -1,7 +1,0 @@
----
-- name: Deploy Postgresql server and run provided SQL script
-  hosts: localhost
-  vars:
-    postgresql_input_file: "examples/simple.sql"
-  roles:
-    - redhat.rhel_system_roles.postgresql

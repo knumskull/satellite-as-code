@@ -1,7 +1,0 @@
----
-__kdump_packages:
-  - grubby
-  - iproute  # for fact gathering for ip facts
-  - kexec-tools
-  - kdump-utils
-  - openssh-clients

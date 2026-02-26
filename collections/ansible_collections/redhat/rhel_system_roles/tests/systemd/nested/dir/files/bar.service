@@ -1,6 +1,0 @@
-[Service]
-ExecStart=/bin/sleep 3600
-ExecReload=/bin/touch /tmp/bar-reloaded
-
-[Install]
-WantedBy=multi-user.target
