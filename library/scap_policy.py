@@ -21,12 +21,13 @@ __metaclass__ = type
 
 DOCUMENTATION = '''
 ---
-module: compliance_policy
-version_added: 5.8.0
+module: scap_policy
 short_description: Manage OpenSCAP Compliance Policies
 description:
   - Create, update, and delete OpenSCAP Compliance Policies on a Red Hat Satellite.
   - Resolves SCAP content, profiles, organizations, locations, and hostgroups by name.
+  - This module is idempotent. Re-running will not recreate an existing policy unless
+    its configuration has changed.
 author:
   - "satellite.crazy.lab contributors"
 options:
@@ -121,11 +122,12 @@ extends_documentation_fragment:
   - redhat.satellite.foreman
 notes:
   - Requires the OpenSCAP plugin to be installed on the Satellite server.
+  - Verify success in the Satellite UI under Content > SCAP Policies or via C(hammer policy list).
 '''
 
 EXAMPLES = '''
 - name: "Create a CIS compliance policy"
-  redhat.satellite.compliance_policy:
+  scap_policy:
     username: "admin"
     password: "changeme"
     server_url: "https://satellite.example.com"
@@ -145,7 +147,7 @@ EXAMPLES = '''
     state: present
 
 - name: "Remove a compliance policy"
-  redhat.satellite.compliance_policy:
+  scap_policy:
     username: "admin"
     password: "changeme"
     server_url: "https://satellite.example.com"
@@ -159,8 +161,8 @@ entity:
   returned: success
   type: dict
   contains:
-    compliance_policies:
-      description: List of compliance policies.
+    scap_policies:
+      description: List of SCAP policies.
       type: list
       elements: dict
 '''
@@ -171,7 +173,7 @@ from ansible.module_utils.basic import AnsibleModule, env_fallback
 from ansible.module_utils.urls import fetch_url
 
 
-class SatelliteCompliancePolicyModule(object):
+class SatelliteScapPolicyModule(object):
     """Manage OpenSCAP compliance policies via the Satellite API."""
 
     def __init__(self):
@@ -349,40 +351,40 @@ class SatelliteCompliancePolicyModule(object):
 
         if state == 'absent':
             if existing is None:
-                self.module.exit_json(changed=False, entity={'compliance_policies': []})
+                self.module.exit_json(changed=False, entity={'scap_policies': []})
             if self.module.check_mode:
-                self.module.exit_json(changed=True, entity={'compliance_policies': []})
+                self.module.exit_json(changed=True, entity={'scap_policies': []})
             status, result = self._api_request('DELETE', '/api/v2/compliance/policies/{0}'.format(existing['id']))
             if status not in (200, 204):
                 self.module.fail_json(msg="Failed to delete policy '{0}': HTTP {1}".format(name, status))
-            self.module.exit_json(changed=True, entity={'compliance_policies': []})
+            self.module.exit_json(changed=True, entity={'scap_policies': []})
 
         payload = self._build_policy_payload()
 
         if existing is None:
             if self.module.check_mode:
-                self.module.exit_json(changed=True, entity={'compliance_policies': [payload['policy']]})
+                self.module.exit_json(changed=True, entity={'scap_policies': [payload['policy']]})
             status, result = self._api_request('POST', '/api/v2/compliance/policies', payload)
             if status != 201:
                 self.module.fail_json(msg="Failed to create policy '{0}': HTTP {1} - {2}".format(
                     name, status, result.get('error', {}).get('message', result)))
-            self.module.exit_json(changed=True, entity={'compliance_policies': [result]})
+            self.module.exit_json(changed=True, entity={'scap_policies': [result]})
 
         if not self._needs_update(existing, payload):
-            self.module.exit_json(changed=False, entity={'compliance_policies': [existing]})
+            self.module.exit_json(changed=False, entity={'scap_policies': [existing]})
 
         if self.module.check_mode:
-            self.module.exit_json(changed=True, entity={'compliance_policies': [payload['policy']]})
+            self.module.exit_json(changed=True, entity={'scap_policies': [payload['policy']]})
 
         status, result = self._api_request('PUT', '/api/v2/compliance/policies/{0}'.format(existing['id']), payload)
         if status != 200:
             self.module.fail_json(msg="Failed to update policy '{0}': HTTP {1} - {2}".format(
                 name, status, result.get('error', {}).get('message', result)))
-        self.module.exit_json(changed=True, entity={'compliance_policies': [result]})
+        self.module.exit_json(changed=True, entity={'scap_policies': [result]})
 
 
 def main():
-    SatelliteCompliancePolicyModule().run()
+    SatelliteScapPolicyModule().run()
 
 
 if __name__ == '__main__':

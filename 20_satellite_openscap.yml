@@ -92,7 +92,7 @@
 
 
     - name: 'Manage OpenSCAP compliance policies'
-      compliance_policy:
+      scap_policy:
         username: '{{ satellite_username }}'
         password: '{{ satellite_password }}'
         server_url: '{{ satellite_server_url }}'
