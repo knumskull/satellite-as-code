@@ -207,9 +207,10 @@ class SatelliteScapPolicyModule(object):
         )
 
         self.server_url = self.module.params['server_url'].rstrip('/')
-        self.username = self.module.params['username']
-        self.password = self.module.params['password']
-        self.validate_certs = self.module.params['validate_certs']
+
+        self.module.params['url_username'] = self.module.params['username']
+        self.module.params['url_password'] = self.module.params['password']
+        self.module.params['force_basic_auth'] = True
 
     def _api_request(self, method, endpoint, data=None):
         """Make an authenticated API request to Satellite."""
@@ -222,8 +223,6 @@ class SatelliteScapPolicyModule(object):
 
         resp, info = fetch_url(
             self.module, url, method=method, data=body, headers=headers,
-            url_username=self.username, url_password=self.password,
-            validate_certs=self.validate_certs, force_basic_auth=True,
         )
 
         status = info['status']
