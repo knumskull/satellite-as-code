@@ -256,10 +256,13 @@ class SatelliteScapPolicyModule(object):
         return ids
 
     def _find_policy(self, name):
-        """Find an existing policy by name."""
+        """Find an existing policy by name, returning full details."""
         policies = self._get_all('/api/v2/compliance/policies')
         for policy in policies:
             if policy['name'] == name:
+                status, detail = self._api_request('GET', '/api/v2/compliance/policies/{0}'.format(policy['id']))
+                if status == 200:
+                    return detail
                 return policy
         return None
 

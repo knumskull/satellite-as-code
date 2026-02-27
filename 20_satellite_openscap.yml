@@ -85,6 +85,7 @@
           }}
         force_basic_auth: true
         body_format: 'json'
+        timeout: 300
       delegate_to: 'localhost'
       when: >
         sat_scap_enable_default_content is defined
