@@ -1,0 +1,17 @@
+
+---
+# Whether to enable the Foreman OpenSCAP Ansible role
+sat_scap_enable_foreman_ansible_role: true
+
+# Name of the Foreman OpenSCAP Ansible role
+sat_scap_foreman_role_name: 'theforeman.foreman_scap_client'
+
+# Whether to enable the OpenSCAP content that is shipped with Satellite
+sat_scap_enable_default_content: true
+
+# Path where to store the downloaded files of sat_scap_content_files
+sat_scap_content_download_path: '/tmp'
+
+# Whether to delete downloaded OpenSCAP files once imported
+sat_scap_cleanup_temp_files: true
+...

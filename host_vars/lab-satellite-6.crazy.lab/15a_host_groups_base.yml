@@ -7,6 +7,7 @@ sat_base_host_groups:
       - 'CRAZY.LAB'
     ansible_roles:
       - '{{ sat_scap_foreman_role_name }}'
+    openscap_proxy: '{{ inventory_hostname }}'
 
 sat_operating_system_host_groups:
   - name: 'hg-rhel-8'

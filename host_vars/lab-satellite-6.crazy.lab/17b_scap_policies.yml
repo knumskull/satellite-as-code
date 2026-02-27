@@ -1,20 +1,5 @@
 
 ---
-# Whether to enable the Foreman OpenSCAP Ansible role
-sat_scap_enable_foreman_ansible_role: true
-
-# Name of the Foreman OpenSCAP Ansible role
-sat_scap_foreman_role_name: 'theforeman.foreman_scap_client'
-
-# Whether to enable the OpenSCAP content that is shipped with Satellite
-sat_scap_enable_default_content: true
-
-# Path where to store the downloaded files of sat_scap_content_files
-sat_scap_content_download_path: '/tmp'
-
-# Whether to delete downloaded OpenSCAP files once imported
-sat_scap_cleanup_temp_files: true
-
 # OpenSCAP Compliance Policies
 sat_scap_compliance_policies:
   - name: 'CIS-Server-L1-RHEL8-Policy'
@@ -42,7 +27,7 @@ sat_scap_compliance_policies:
     locations:
       - '{{ satellite_location }}'
     hostgroups:
-      - 'hg-base/hg-rhel-8'
+      - 'hg-base/hg-rhel-8/hg-default-rhel-8'
 
   - name: 'CIS-Server-L1-RHEL9-Policy'
     description: 'CIS Server Level 1 for RHEL 9'
@@ -69,7 +54,7 @@ sat_scap_compliance_policies:
     locations:
       - '{{ satellite_location }}'
     hostgroups:
-      - 'hg-base/hg-rhel-9'
+      - 'hg-base/hg-rhel-9/hg-default-rhel-9'
 
   - name: 'CIS-Server-L1-RHEL10-Policy'
     description: 'CIS Server Level 1 for RHEL 10'
@@ -96,4 +81,5 @@ sat_scap_compliance_policies:
     locations:
       - '{{ satellite_location }}'
     hostgroups:
-      - 'hg-base/hg-rhel-10'
+      - 'hg-base/hg-rhel-10/hg-default-rhel-10'
+...
