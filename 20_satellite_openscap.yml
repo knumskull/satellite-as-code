@@ -109,7 +109,7 @@
         organizations: '{{ __t_policy.organizations }}'
         locations: '{{ __t_policy.locations }}'
         hostgroups: '{{ __t_policy.hostgroups | default([]) }}'
-        state: present
+        state: '{{ __t_policy.state | default("present") }}'
       delegate_to: 'localhost'
       when: >
         sat_scap_compliance_policies is defined
