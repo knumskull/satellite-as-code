@@ -5,7 +5,7 @@ rhc_state: 'present'
 rhc_auth:
   activation_keys:
     keys: ['{{ satellite_rhsm_activationkey }}']
-  rhc_organization: '{{ satellite_rhsm_organization_id }}'
+rhc_organization: '{{ satellite_rhsm_organization_id }}'
 
 # Register against the Satellite server
 rhc_server:

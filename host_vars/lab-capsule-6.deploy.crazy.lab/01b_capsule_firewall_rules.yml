@@ -1,22 +1,21 @@
 ---
 # Firewalld rules for Satellite Capsule
+# Managed by redhat.rhel_system_roles.firewall
 # https://docs.redhat.com/en/documentation/red_hat_satellite/6.18/html/installing_capsule_server/preparing-environment-for-capsule-installation
-sat_firewall_ports:
-  - port: '8000/tcp'
+firewall:
+  - port:
+      - '8000/tcp'
+      - '8140/tcp'
+      - '8443/tcp'
+      - '9090/tcp'
+      - '53/tcp'
+      - '53/udp'
+      - '67/udp'
+      - '69/udp'
+    service:
+      - 'http'
+      - 'https'
     zone: 'public'
-
-  - port: '8140/tcp'
-    zone: 'public'
-
-  - port: '8443/tcp'
-    zone: 'public'
-
-  - port: '9090/tcp'
-    zone: 'public'
-
-sat_firewall_services:
-  - name: 'http'
-    zone: 'public'
-
-  - name: 'https'
-    zone: 'public'
+    state: 'enabled'
+    permanent: true
+    immediate: true

@@ -15,6 +15,17 @@
           Capsule installation requires satellite_installer_scenario set to
           'capsule'.
 
+    - name: 'Set hostname to {{ inventory_hostname }}'
+      ansible.builtin.hostname:
+        name: '{{ inventory_hostname }}'
+
+    - name: 'Ensure {{ inventory_hostname }} resolves in /etc/hosts'
+      ansible.builtin.lineinfile:
+        path: '/etc/hosts'
+        regexp: '.*{{ inventory_hostname }}.*'
+        line: '{{ ansible_default_ipv4.address }}  {{ inventory_hostname }}  {{ inventory_hostname.split(".")[0] }}'
+        state: 'present'
+
     - name: 'Handle certificate deployment'
       become: true
       when: >
@@ -100,31 +111,9 @@
           {{ satellite_installer_options +
              ['--certs-tar-file /root/' + (satellite_installer_certs_tar_file | basename)] }}
 
-    - name: 'Handle firewalld configuration'
-      become: true
-      block:
-
-        - name: 'Configure firewalld ports'
-          ansible.posix.firewalld:
-            zone: "{{ _t_port.zone | default('public') }}"
-            port: '{{ _t_port.port }}'
-            state: 'enabled'
-            permanent: true
-            immediate: true
-          loop: '{{ sat_firewall_ports }}'
-          loop_control:
-            loop_var: '_t_port'
-
-        - name: 'Configure firewalld services'
-          ansible.posix.firewalld:
-            zone: "{{ _t_service.zone | default('public') }}"
-            service: '{{ _t_service.name }}'
-            state: 'enabled'
-            permanent: true
-            immediate: true
-          loop: '{{ sat_firewall_services }}'
-          loop_control:
-            loop_var: '_t_service'
+    - name: 'Configure firewalld'
+      ansible.builtin.include_role:
+        name: 'redhat.rhel_system_roles.firewall'
 
     - name: 'Verify {{ sat_package_name }} is installed'
       ansible.builtin.dnf:

@@ -3,13 +3,13 @@
 sat_deploy_certificates: true
 
 # Path to the private key
-sat_certs_priv_key: '.pki/crazy.lab-key.pem'
+sat_certs_priv_key: '.pki/crazy.lab/lab-capsule-6.deploy.crazy.lab-key.pem'
 
 # Path to the public certificate (wildcard)
-sat_certs_pub_key: '.pki/crazy.lab-wildcard.pem'
+sat_certs_pub_key: '.pki/crazy.lab/lab-capsule-6.deploy.crazy.lab.pem'
 
 # Path to the CA bundle
-sat_certs_ca_bundle: '.pki/crazy.lab-chain.pem'
+sat_certs_ca_bundle: '.pki/crazy.lab/lab-capsule-6.deploy.crazy.lab-chain.pem'
 
 # List of certificate files to deploy
 sat_certs:
@@ -18,15 +18,15 @@ sat_certs:
   - '{{ sat_certs_ca_bundle }}'
 
 # Destination directory on the Capsule
-sat_cert_dest_path: '/root/certs'
+sat_cert_dest_path: '/etc/pki/satellite'
 sat_cert_dest_path_owner: 'root'
 sat_cert_dest_path_group: 'root'
-sat_cert_dest_path_mode: '0700'
+sat_cert_dest_path_mode: '0755'
 
 # Certificate file permissions
 sat_certs_owner: 'root'
 sat_certs_group: 'root'
-sat_certs_mode: '0600'
+sat_certs_mode: '0644'
 
 # --------------------------------------------------------------------------
 # Capsule certificate archive

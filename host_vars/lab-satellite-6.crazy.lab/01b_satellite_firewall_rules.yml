@@ -1,18 +1,15 @@
 ---
-# This file holds the firewalld rules and services to apply
-sat_firewall_ports:
-  - port: '8000/tcp'
+# Firewalld rules for Satellite Server
+# Managed by redhat.rhel_system_roles.firewall
+firewall:
+  - port:
+      - '8000/tcp'
+      - '9090/tcp'
+    service:
+      - 'tftp'
+      - 'http'
+      - 'https'
     zone: 'public'
-
-  - port: '9090/tcp'
-    zone: 'public'
-
-sat_firewall_services:
-  - name: 'tftp'
-    zone: 'public'
-
-  - name: 'http'
-    zone: 'public'
-
-  - name: 'https'
-    zone: 'public'
+    state: 'enabled'
+    permanent: true
+    immediate: true
