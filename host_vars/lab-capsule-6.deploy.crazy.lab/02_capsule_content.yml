@@ -1,0 +1,13 @@
+---
+# Satellite organization and location this Capsule belongs to.
+capsule_organization: 'CRAZY.LAB'
+capsule_location: 'loc-local'
+
+# Lifecycle environments to assign to this Capsule.
+# Content from these environments will be synced to the Capsule,
+# making it available for hosts registered through it.
+capsule_lifecycle_environments:
+  - 'lce-default-dev'
+
+# Whether to validate TLS when connecting to the Satellite API.
+capsule_validate_certs: false

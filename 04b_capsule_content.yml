@@ -1,0 +1,59 @@
+---
+- name: 'Assign lifecycle environments to a Capsule and sync content'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+
+    - name: 'Validate Capsule content variables'
+      ansible.builtin.assert:
+        that:
+          - capsule_lifecycle_environments is defined
+          - capsule_lifecycle_environments | length > 0
+        fail_msg: >
+          capsule_lifecycle_environments must be defined and non-empty.
+
+    - name: 'Assign lifecycle environments to {{ inventory_hostname }}'
+      redhat.satellite.smart_proxy:
+        username: '{{ satellite_username }}'
+        password: '{{ satellite_password }}'
+        server_url: 'https://{{ capsule_satellite_server }}'
+        validate_certs: '{{ capsule_validate_certs | default(false) }}'
+        name: '{{ inventory_hostname }}'
+        url: 'https://{{ inventory_hostname }}:9090'
+        lifecycle_environments: '{{ capsule_lifecycle_environments }}'
+        organizations:
+          - '{{ capsule_organization }}'
+        locations:
+          - '{{ capsule_location }}'
+        state: 'present'
+      delegate_to: 'localhost'
+      register: '__t_smart_proxy'
+
+    - name: 'Retrieve Capsule ID for {{ inventory_hostname }}'
+      redhat.satellite.resource_info:
+        username: '{{ satellite_username }}'
+        password: '{{ satellite_password }}'
+        server_url: 'https://{{ capsule_satellite_server }}'
+        validate_certs: '{{ capsule_validate_certs | default(false) }}'
+        resource: 'smart_proxies'
+        search: 'name = {{ inventory_hostname }}'
+      delegate_to: 'localhost'
+      register: '__t_capsule_info'
+
+    - name: 'Trigger content sync on {{ inventory_hostname }}'
+      ansible.builtin.uri:
+        url: >-
+          https://{{ capsule_satellite_server }}/katello/api/capsules/{{
+            __t_capsule_info.resources[0].id }}/content/sync
+        method: 'POST'
+        user: '{{ satellite_username }}'
+        password: '{{ satellite_password }}'
+        force_basic_auth: true
+        validate_certs: '{{ capsule_validate_certs | default(false) }}'
+        body_format: 'json'
+        body: '{}'
+        status_code:
+          - 200
+          - 202
+      delegate_to: 'localhost'
+      when: capsule_content_sync | default(true) | bool
